@@ -41,18 +41,19 @@ int heartbeat(void)
                 logWarn("heartbeat timeout zigbee dev id:%s,model id:%s\n", hyDev->DeviceId, hyDev->ModelId);
                 hyDev->activeTime = 0;
 
-                HylinkSend hylinkSend = {0};
-                strcpy(hylinkSend.Type, STR_ONOFF);
-                hylinkSend.DataSize = 1;
-                HylinkSendData hylinkSendData = {0};
-                hylinkSend.Data = &hylinkSendData;
+                // HylinkSend hylinkSend = {0};
+                // strcpy(hylinkSend.Type, STR_ONOFF);
+                // hylinkSend.DataSize = 1;
+                // HylinkSendData hylinkSendData = {0};
+                // hylinkSend.Data = &hylinkSendData;
 
-                strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
-                strcpy(hylinkSendData.ModelId, hyDev->ModelId);
-                strcpy(hylinkSendData.Key, STR_ONLINE);
-                strcpy(hylinkSendData.Value, "0");
+                // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
+                // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
+                // strcpy(hylinkSendData.Key, STR_ONLINE);
+                // strcpy(hylinkSendData.Value, "0");
 
-                hylinkSendFunc(&hylinkSend);
+                // hylinkSendFunc(&hylinkSend);
+                hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ONOFF, STR_ONLINE, "0");
             }
         }
     }

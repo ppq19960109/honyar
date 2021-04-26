@@ -45,6 +45,7 @@ static int clientSend(void *data, unsigned int len)
 
 int clientOpen(void)
 {
+    printf("clientOpen\n");
     registerTransferCb(clientSend, TRANSFER_CLIENT_WRITE);
 
     //"127.0.0.1"

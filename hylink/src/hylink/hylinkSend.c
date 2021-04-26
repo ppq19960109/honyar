@@ -21,8 +21,10 @@ int hylinkDispatch(const char *str, const int str_len, const char dir)
     hyLinkSendBuf[0] = 0x02;
     strncpy(&hyLinkSendBuf[1], str, str_len);
     hyLinkSendBuf[str_len + 1] = 0x03;
+    hyLinkSendBuf[str_len + 2] = 0x00;
 
-    if (dir)
+    logInfo("hylinkDispatch:%s,dir:%d\n", hyLinkSendBuf, dir);
+    if (dir == 1)
     {
         ret = runTransferCb(hyLinkSendBuf, str_len + 2, TRANSFER_SERVER_ZIGBEE_WRITE);
     }
@@ -39,9 +41,14 @@ int hylinkSendFunc(HylinkSend *hylinkSend)
         goto fail;
 
     cJSON *root = cJSON_CreateObject();
-    if (hylinkSend->Command)
+    if (hylinkSend->Command == 1)
     {
         cJSON_AddStringToObject(root, STR_COMMAND, STR_DISPATCH);
+    }
+    else if (hylinkSend->Command == 2)
+    {
+        cJSON_AddStringToObject(root, STR_COMMAND, "BeatHeartResponse");
+        goto heart;
     }
     else
     {
@@ -70,7 +77,9 @@ int hylinkSendFunc(HylinkSend *hylinkSend)
         if (strlen(hylinkSend->Data[i].Online))
             cJSON_AddStringToObject(arrayItem, STR_ONLINE, hylinkSend->Data[i].Online);
     }
-    char *json = cJSON_PrintUnformatted(root);
+    char *json = NULL;
+heart:
+    json = cJSON_PrintUnformatted(root);
     logInfo("hylink send json:%s\n", json);
 
     int ret = hylinkDispatch(json, strlen(json), hylinkSend->Command);

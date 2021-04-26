@@ -8,6 +8,14 @@
         "hylinksend.h": "c",
         "string.h": "c",
         "mqttclientpersistence.h": "c",
-        "hylinklistfunc.h": "c"
+        "hylinklistfunc.h": "c",
+        "cjson.h": "c",
+        "hylinksubdev.h": "c",
+        "hylinkrecv.h": "c",
+        "socket.h": "c",
+        "inet.h": "c",
+        "epollserver.h": "c",
+        "client.h": "c",
+        "udp_broadcast.h": "c"
     }
 }

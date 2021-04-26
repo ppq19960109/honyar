@@ -17,7 +17,8 @@
         "streambuf": "c",
         "hylinklistfunc.h": "c",
         "hylink.h": "c",
-        "hylinksend.h": "c"
+        "hylinksend.h": "c",
+        "framecb.h": "c"
     },
     "python.formatting.provider": "yapf"
 }

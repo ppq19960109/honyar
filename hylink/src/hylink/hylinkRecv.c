@@ -66,9 +66,9 @@ int hylinkRecvJson(char *data)
         logDebug("Command is dispatch\n");
         commandDir = 1;
     }
-    else if (strcmp(STR_BEATHEARTRESPONSE, Command->valuestring) == 0)
+    else if (strcmp(STR_TCPBEATHEART, Command->valuestring) == 0)
     {
-        logDebug("Command is BeatHeartResponse\n");
+        logDebug("Command is STR_TCPBEATHEART\n");
         goto heart;
     }
     else
@@ -145,7 +145,8 @@ int hylinkRecvJson(char *data)
                 logError("hyDev is null");
                 break;
             }
-            getByteForJson(array_sub, STR_ONLINE, &hyDev->online);
+            getByteForJson(array_sub, STR_VALUE, &hyDev->online);
+            logWarn("devid:%s,online:%d", hyDevId, hyDev->online);
         }
         break;
         case UNREGISTER:
@@ -163,7 +164,6 @@ int hylinkRecvJson(char *data)
         break;
         case DEVSINFO:
         {
-
             int index = 0;
             HylinkDev *dev;
             HylinkSend hylinkSend = {0};
@@ -202,6 +202,9 @@ int hylinkRecvJson(char *data)
     cJSON_Delete(root);
     return res;
 heart:
+    hylinkReportHeart();
+    cJSON_Delete(root);
+    return 0;
 fail:
     cJSON_Delete(root);
     return -1;

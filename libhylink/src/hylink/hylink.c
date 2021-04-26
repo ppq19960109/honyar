@@ -53,5 +53,6 @@ void hylinkOpen(void)
     registerSystemCb(hylinkSendDevInfo, CMD_DEVSINFO);
 
     hylinkInit();
+
     hytoolOpen();
 }

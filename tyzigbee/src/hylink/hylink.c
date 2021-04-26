@@ -29,6 +29,19 @@ static int addDevToHyList(const char *devId, const char *modelId)
     hylinkListAdd(hylinkDev);
     return 0;
 }
+
+void hyDevInitOnline(void)
+{
+    HylinkDev *hyDev = NULL;
+    hyLink_kh_foreach_value(hyDev)
+    {
+        if (hyDev == NULL)
+            continue;
+        logWarn("hyLink_kh_foreach_value hyDevInitOnline:%s", hyDev->DeviceId);
+        runZigbeeCb((void *)hyDev->DeviceId, (void *)hyDev->ModelId, STR_VERSION, NULL, ZIGBEE_DEV_DISPATCH);
+    }
+}
+
 /*********************************************************************************
   *Function:  hylinkDevJoin
   * Description： report zigbee device registriation information
@@ -56,21 +69,24 @@ static int hylinkDevJoin(void *devId, void *modelId, void *version, void *manuNa
     hylinkListAdd(hyDev);
     insertDatabse(hyDev->DeviceId, hyDev->ModelId);
 
-    HylinkSend hylinkSend = {0};
-    HylinkSendData hylinkSendData = {0};
-    hylinkSend.Data = &hylinkSendData;
-    strcpy(hylinkSend.Type, STR_REGISTER);
-    hylinkSend.DataSize = 1;
+    // HylinkSend hylinkSend = {0};
+    // HylinkSendData hylinkSendData = {0};
+    // hylinkSend.Data = &hylinkSendData;
+    // strcpy(hylinkSend.Type, STR_REGISTER);
+    // hylinkSend.DataSize = 1;
 
-    strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
-    strcpy(hylinkSendData.ModelId, hyDev->ModelId);
+    // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
+    // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
 
-    hylinkSendFunc(&hylinkSend);
+    // hylinkSendFunc(&hylinkSend);
 
-    strcpy(hylinkSend.Type, STR_ATTRIBUTE);
-    strcpy(hylinkSendData.Key, STR_VERSION);
-    strcpy(hylinkSendData.Value, hyDev->Version);
-    hylinkSendFunc(&hylinkSend);
+    // strcpy(hylinkSend.Type, STR_ATTRIBUTE);
+    // strcpy(hylinkSendData.Key, STR_VERSION);
+    // strcpy(hylinkSendData.Value, hyDev->Version);
+    // hylinkSendFunc(&hylinkSend);
+
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_REGISTER, NULL, NULL);
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ATTRIBUTE, STR_VERSION, hyDev->Version);
 
     runZigbeeCb((void *)hyDev->DeviceId, (void *)hyDev->ModelId, NULL, NULL, ZIGBEE_DEV_DISPATCH);
     return 0;
@@ -90,23 +106,25 @@ static int hylinkOnlineFresh(void *devId, void *null, void *version, void *null1
     //-------------------------------
     strcpy(hyDev->Version, version);
 
-    HylinkSend hylinkSend = {0};
-    HylinkSendData hylinkSendData = {0};
-    hylinkSend.Data = &hylinkSendData;
-    hylinkSend.DataSize = 1;
+    // HylinkSend hylinkSend = {0};
+    // HylinkSendData hylinkSendData = {0};
+    // hylinkSend.Data = &hylinkSendData;
+    // hylinkSend.DataSize = 1;
 
-    strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
-    strcpy(hylinkSendData.ModelId, hyDev->ModelId);
+    // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
+    // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
 
-    strcpy(hylinkSend.Type, STR_ONOFF);
-    strcpy(hylinkSendData.Key, STR_ONLINE);
-    strcpy(hylinkSendData.Value, "1");
-    hylinkSendFunc(&hylinkSend);
+    // strcpy(hylinkSend.Type, STR_ONOFF);
+    // strcpy(hylinkSendData.Key, STR_ONLINE);
+    // strcpy(hylinkSendData.Value, "1");
+    // hylinkSendFunc(&hylinkSend);
 
-    strcpy(hylinkSend.Type, STR_ATTRIBUTE);
-    strcpy(hylinkSendData.Key, STR_VERSION);
-    strcpy(hylinkSendData.Value, hyDev->Version);
-    hylinkSendFunc(&hylinkSend);
+    // strcpy(hylinkSend.Type, STR_ATTRIBUTE);
+    // strcpy(hylinkSendData.Key, STR_VERSION);
+    // strcpy(hylinkSendData.Value, hyDev->Version);
+    // hylinkSendFunc(&hylinkSend);
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ONOFF, STR_ONLINE, "1");
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ATTRIBUTE, STR_VERSION, hyDev->Version);
     return 0;
 }
 
@@ -119,16 +137,19 @@ static int hylinkDevLeave(void *devId, void *null, void *null1, void *null2)
         return -1;
     }
 
-    HylinkSend hylinkSend = {0};
-    HylinkSendData hylinkSendData = {0};
-    hylinkSend.Data = &hylinkSendData;
-    hylinkSend.DataSize = 1;
+    // HylinkSend hylinkSend = {0};
+    // HylinkSendData hylinkSendData = {0};
+    // hylinkSend.Data = &hylinkSendData;
+    // hylinkSend.DataSize = 1;
 
-    strcpy(hylinkSend.Type, STR_UNREGISTER);
+    // strcpy(hylinkSend.Type, STR_UNREGISTER);
 
-    strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
+    // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
 
-    hylinkSendFunc(&hylinkSend);
+    // hylinkSendFunc(&hylinkSend);
+
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_UNREGISTER, NULL, NULL);
+
     hylinkListDel(hyDev->DeviceId);
     deleteDatabse(hyDev->DeviceId);
     return 0;
@@ -143,20 +164,20 @@ static int hylinkDevZclReport(void *devId, void *hyKey, void *data, void *datale
         return -1;
     }
 
-    HylinkSend hylinkSend = {0};
-    HylinkSendData hylinkSendData = {0};
-    hylinkSend.Data = &hylinkSendData;
-    hylinkSend.DataSize = 1;
+    // HylinkSend hylinkSend = {0};
+    // HylinkSendData hylinkSendData = {0};
+    // hylinkSend.Data = &hylinkSendData;
+    // hylinkSend.DataSize = 1;
 
-    strcpy(hylinkSend.Type, STR_ATTRIBUTE);
+    // strcpy(hylinkSend.Type, STR_ATTRIBUTE);
 
-    strcpy(hylinkSendData.DeviceId, devId);
-    strcpy(hylinkSendData.ModelId, hyDev->ModelId);
+    // strcpy(hylinkSendData.DeviceId, devId);
+    // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
 
-    strcpy(hylinkSendData.Key, hyKey);
-    strcpy(hylinkSendData.Value, data);
-    hylinkSendFunc(&hylinkSend);
-
+    // strcpy(hylinkSendData.Key, hyKey);
+    // strcpy(hylinkSendData.Value, data);
+    // hylinkSendFunc(&hylinkSend);
+    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ATTRIBUTE, hyKey, data);
     return 0;
 }
 //-----------------------------------------------------

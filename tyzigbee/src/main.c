@@ -13,6 +13,18 @@
 
 #include "hytool.h"
 
+static int zigbee_init_flag = 0;
+int hylink_connect(void)
+{
+    printf("---hylink_connect ...\n");
+    if (!zigbee_init_flag)
+    {
+        zigbee_init_flag = 1;
+        zigbeeOpen();
+    }
+    return 0;
+}
+
 static int mainClose(void)
 {
     hytoolClose();
@@ -29,9 +41,9 @@ int main()
     registerSystemCb(heartbeat, SYSTEM_HEARTBEAT);
     registerSystemCb(mainClose, SYSTEM_CLOSE);
     hylinkOpen();
-    zigbeeOpen();
-    logInfo("tuyazigbee app main start");
     hytoolOpen();
+
+    logInfo("tuyazigbee app main start");
     while (1)
     {
         sleep(1);

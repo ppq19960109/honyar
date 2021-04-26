@@ -166,9 +166,9 @@ static int zigbeeDevZclDispatch(zigbeeDev *zDev, ty_z3_aps_frame_s *frame, void 
         return 0;
     }
 
-    for (int hyKeyLen, i = 0; i < zDev->attrLen; ++i)
+    for (i = 0; i < zDev->attrLen; ++i)
     {
-        hyKeyLen = strlen(zDev->attr[i].hyKey);
+        int hyKeyLen = strlen(zDev->attr[i].hyKey);
         if (strncmp(key, zDev->attr[i].hyKey, hyKeyLen) == 0)
         {
             break;

@@ -1,8 +1,11 @@
 #include "main.h"
 #include "hy_mqtt_client.h"
 #include "MQTTClient.h"
+#include "http_token.h"
 
 #define QOS 1
+
+static int gateway_online = 0;
 
 static void delivered(void *context, MQTTClient_deliveryToken dt)
 {
@@ -25,7 +28,7 @@ static int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_mes
     // }
     // putchar('\n');
     logInfo("   message payload: %.*s\n", message->payloadlen, (char *)message->payload);
-    // hylinkDispatch(message->payload, message->payloadlen);
+    hylinkDispatch(message->payload, message->payloadlen);
 
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);
@@ -56,7 +59,8 @@ int mqtt_client_publish(const char *topicName, char *payload)
     pubmsg.payloadlen = (int)strlen(payload);
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
-    ret = MQTTClient_publishMessage(client, topicName, &pubmsg, &token);
+    if (gateway_online)
+        ret = MQTTClient_publishMessage(client, topicName, &pubmsg, &token);
     logInfo("publish topic:%s\npayload:%s\n", topicName, payload);
     return ret;
 }
@@ -77,12 +81,26 @@ static int mqtt_Recv(void *recv, unsigned int len)
     char *json = (char *)recv;
     if (json == NULL)
         return -1;
+
     int ret = 0;
     cJSON *root = cJSON_Parse(json);
     if (root == NULL)
     {
         logError("root is NULL\n");
         return -1;
+    }
+    //command字段
+    cJSON *Command = cJSON_GetObjectItem(root, STR_COMMAND);
+    if (Command == NULL)
+    {
+        logError("Command is NULL\n");
+        goto fail;
+    }
+    else if (strcmp(STR_BEATHEARTRESPONSE, Command->valuestring) == 0)
+    {
+        logDebug("Command is BeatHeartResponse\n");
+        sprintf(publish_topic, REPORT_TOPIC, gateway_mac, gateway_mac, "heart");
+        goto heart;
     }
 
     //Type字段
@@ -102,16 +120,19 @@ static int mqtt_Recv(void *recv, unsigned int len)
     }
 
     char hyDevId[33] = {0};
+    char *payload = NULL;
 
     int array_size = cJSON_GetArraySize(Data);
     if (array_size == 0)
         goto fail;
     cJSON *array_sub = cJSON_GetArrayItem(Data, 0);
     getStrForJson(array_sub, STR_DEVICEID, hyDevId);
-
     sprintf(publish_topic, REPORT_TOPIC, gateway_mac, hyDevId, Type->valuestring);
-    char *payload = cJSON_PrintUnformatted(root);
+
+heart:
+    payload = cJSON_PrintUnformatted(root);
     ret = mqtt_client_publish(publish_topic, payload);
+    runTransferCb(payload, strlen(payload), TRANSFER_SERVER_HYLINK_WRITE);
     cJSON_free(payload);
 
     cJSON_Delete(root);
@@ -121,12 +142,50 @@ fail:
     return -1;
 }
 
+static int gateway_online_report(int onoff)
+{
+    gateway_online = onoff;
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, STR_COMMAND, STR_REPORT);
+
+    cJSON_AddStringToObject(root, STR_FRAMENUMBER, "0");
+
+    cJSON_AddStringToObject(root, STR_TYPE, STR_ONOFF);
+
+    cJSON *DataArray = cJSON_CreateArray();
+    cJSON_AddItemToObject(root, STR_DATA, DataArray);
+
+    cJSON *arrayItem = cJSON_CreateObject();
+    cJSON_AddItemToArray(DataArray, arrayItem);
+
+    cJSON_AddStringToObject(arrayItem, STR_DEVICEID, gateway_mac);
+    cJSON_AddStringToObject(arrayItem, STR_MODELID, STR_GATEWAY_MODELID);
+
+    cJSON_AddStringToObject(arrayItem, STR_KEY, STR_ONLINE);
+    if (onoff)
+    {
+        cJSON_AddStringToObject(arrayItem, STR_VALUE, "1");
+    }
+    else
+    {
+        cJSON_AddStringToObject(arrayItem, STR_VALUE, "0");
+    }
+    char *json = cJSON_PrintUnformatted(root);
+    mqtt_Recv(json, strlen(json));
+    cJSON_free(json);
+    return 0;
+}
+
 //------------------------------
 int mqtt_client_close(void)
 {
-    MQTTClient_unsubscribe(client, subscribe_topic);
-
-    MQTTClient_disconnect(client, 2000);
+    gateway_online_report(0);
+    if (gateway_online)
+    {
+        MQTTClient_unsubscribe(client, subscribe_topic);
+        MQTTClient_disconnect(client, 1000);
+    }
     MQTTClient_destroy(&client);
     return 0;
 }
@@ -135,17 +194,21 @@ int mqtt_client_reconnect(void)
 {
     logWarn("mqtt_client_reconnect.........");
     mqtt_client_close();
-    sleep(2);
+    sleep(4);
     mqtt_client_open();
     return 0;
 }
 
+static char clientId[48];
+static char password[1024];
+
 int mqtt_client_open(void)
 {
     const char *serverURI = MQTT_ADDRESS;
-    const char *clientId = MQTT_CLIENTID;
     const char *username = MQTT_USERNAME;
-    const char *password = MQTT_PASSWORD;
+
+    // const char *clientId = MQTT_CLIENTID;
+    // const char *password = MQTT_PASSWORD;
 
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
     int rc;
@@ -156,30 +219,39 @@ int mqtt_client_open(void)
         fprintf(stderr, "get mac error\n");
         exit(1);
     }
+    sprintf(clientId, "GID_HONYAR@@@%s", gateway_mac);
 
     MQTTClient_create(&client, serverURI, clientId,
                       MQTTCLIENT_PERSISTENCE_NONE, NULL);
+reconnect:
+    memset(password, 0, sizeof(password));
+    curl_http_get_token(clientId, gateway_mac, password);
+    printf("curl_http_get_token:%s,len:%d\n", password, strlen(password));
     conn_opts.keepAliveInterval = 20;
     conn_opts.cleansession = 1;
     conn_opts.username = username;
     conn_opts.password = password;
     MQTTClient_setCallbacks(client, NULL, connlost, msgarrvd, delivered);
-reconnect:
+
+    printf("mqtt server addr:%s\n", MQTT_ADDRESS);
+    printf("mqtt server clientId:%s\n", clientId);
+    printf("mqtt server username:%s\n", username);
+    printf("mqtt server password:%s\n", password);
     if ((rc = MQTTClient_connect(client, &conn_opts)) != MQTTCLIENT_SUCCESS)
     {
         printf("Failed to connect, return code %d\n", rc);
         sleep(4);
         goto reconnect;
     }
-    
-    if (mqtt_client_subscribe("honyar/Report/#") != MQTTCLIENT_SUCCESS)
-        printf("mqtt_client_subscribe Report fail\n");
+
+    // if (mqtt_client_subscribe("honyar/Report/#") != MQTTCLIENT_SUCCESS)
+    //     printf("mqtt_client_subscribe Report fail\n");
 
     sprintf(subscribe_topic, CTRL_TOPIC, gateway_mac);
     if (mqtt_client_subscribe(subscribe_topic) != MQTTCLIENT_SUCCESS)
         printf("mqtt_client_subscribe fail\n");
     else
         printf("mqtt_client_subscribe success:%s\n", subscribe_topic);
-
+    gateway_online_report(1);
     return rc;
 }

@@ -8,8 +8,10 @@
 #include <time.h>
 #include <sys/reboot.h>
 #include <pthread.h>
+#include <errno.h>
 
 #include "cJSON.h"
+#include "curl/curl.h"
 
 #include "logFunc.h"
 #include "cmd_run.h"
@@ -24,11 +26,13 @@
 #include "hylinkSend.h"
 #include "hylinkRecv.h"
 
-#define ETH_NAME "eth0"
+#define ETH_NAME "eth0.2"
+#define TOKEN_URL "http://home.sikelai.cn:8328/token/applyToken"
+#define LOCAL_TCP_PORT 8001
 
 #define MQTT_ADDRESS "post-cn-oew22m4al1d.mqtt.aliyuncs.com"
-#define MQTT_CLIENTID "GID_HONYAR@@@0001"
-#define MQTT_USERNAME "Signature|JNKMaQHBiFiwGPQJ|post-cn-oew22m4al1d"
-#define MQTT_PASSWORD "j4ihmBX0vZtWIMOdCHFtHDnOLIw="
+// #define MQTT_CLIENTID "GID_HONYAR@@@0003"
+#define MQTT_USERNAME "Token|JNKMaQHBiFiwGPQJ|post-cn-oew22m4al1d"
+// #define MQTT_PASSWORD "YRT773vNA3H/0IgbUeQSqbWyM/c="
 
 #endif

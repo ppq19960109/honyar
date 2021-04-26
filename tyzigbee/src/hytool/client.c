@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "frameCb.h"
+#include "main.h"
 
 // #include "epollClient.h"
 // struct EpollTcpEvent myevents;
@@ -20,11 +21,6 @@ static int recv(char *data, unsigned int len)
 static int disconnect(void)
 {
     printf("---disconnect ...\n");
-    return 0;
-}
-static int connect(void)
-{
-    printf("---connect ...\n");
     return 0;
 }
 
@@ -46,7 +42,7 @@ int clientOpen(void)
     registerTransferCb(clientSend, TRANSFER_CLIENT_WRITE);
 
     //"127.0.0.1"
-    tcpEventSet(&threadTcp, "127.0.0.1", 12580, recv, disconnect, connect, 0);
+    tcpEventSet(&threadTcp, "127.0.0.1", 12580, recv, disconnect, hylink_connect, 0);
     threadClientOpen(&threadTcp);
 
     // epollTcpEventSet(&myevents, "192.168.1.6", 12580, recv, disconnect, connect, 0);

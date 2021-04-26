@@ -16,7 +16,7 @@ extern "C"
 #define STR_REPORT "Report"
 #define STR_DISPATCH "Dispatch"
 
-#define STR_BEATHEARTRESPONSE "TcpBeatHeart"
+#define STR_TCPBEATHEART "TcpBeatHeart"
 #define STR_FRAMENUMBER "FrameNumber"
 #define STR_TYPE "Type"
 #define STR_DATA "Data"

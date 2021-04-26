@@ -8,7 +8,7 @@ typedef struct
     struct EpollTcpEvent events[CLIENT_MAX_EVENTS + SERVER_MAX_EVENTS]; //自定义结构体类型数组. +2-->listen fd
 } EpollServer;
 
-static EpollServer epollServer;
+static EpollServer epollServer = {0};
 
 //---------------------------------------------------------------
 

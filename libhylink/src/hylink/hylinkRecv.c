@@ -68,6 +68,10 @@ void hylinkAnalyDevInfo(cJSON *root, cJSON *Data)
             hyLinkDevBuf->online = online;
             runTransferCb(hyLinkDevBuf->devId, hyLinkDevBuf->online, TRANSFER_SUBDEV_LINE);
         }
+        else
+        {
+            return;
+        }
     }
     if (cJSON_HasObjectItem(Data, STR_PARAMS))
     {
@@ -75,7 +79,7 @@ void hylinkAnalyDevInfo(cJSON *root, cJSON *Data)
         int array_size = cJSON_GetArraySize(params);
         for (int i = 0; i < array_size; i++)
         {
-            cJSON * array_sub = cJSON_GetArrayItem(params, i);
+            cJSON *array_sub = cJSON_GetArrayItem(params, i);
             int res = hylinkSubDevAttrUpdate(hyLinkDevBuf, array_sub);
             if (res < 0)
             {
@@ -87,6 +91,7 @@ void hylinkAnalyDevInfo(cJSON *root, cJSON *Data)
         }
     }
     runTransferCb(hyLinkDevBuf, ATTR_REPORT_ALL, TRANSFER_CLOUD_REPORT);
+    runTransferCb(hyLinkDevBuf->devId, strlen(hyLinkDevBuf->devId), TRANSFER_DEVATTR);
     return;
 }
 
@@ -298,8 +303,9 @@ int hylinkRecvAnaly(const char *json)
             break;
         }
     }
-    runTransferCb((void *)json, strlen(json), TRANSFER_MQTT_REPORT);
 heart:
+    runTransferCb((void *)json, strlen(json), TRANSFER_MQTT_REPORT);
+
     cJSON_Delete(root);
     return 0;
 fail:

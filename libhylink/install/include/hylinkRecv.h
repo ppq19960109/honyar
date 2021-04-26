@@ -30,6 +30,7 @@ extern "C"
 
 #define STR_KEY "Key"
 #define STR_VALUE "Value"
+#define STR_ONOFF "OnOff"
 
     int hylinkRecv(void *recv, unsigned int len);
 #ifdef __cplusplus

@@ -29,6 +29,7 @@ static void zigbeeParseJson(char *str)
         logError("modelId is NULL\n");
         goto fail;
     }
+
     cJSON *manuName = cJSON_GetObjectItem(root, "manuName");
     if (manuName == NULL)
     {
@@ -64,6 +65,17 @@ static void zigbeeParseJson(char *str)
     strcpy(zDev->modelId, modelId->valuestring);
     strcpy(zDev->manuName, manuName->valuestring);
     zDev->heartbeatTime = heartbeatTime->valueint;
+
+    if (cJSON_HasObjectItem(root, "report_modelId"))
+    {
+        cJSON *report_modelId = cJSON_GetObjectItem(root, "report_modelId");
+        if (report_modelId == NULL)
+        {
+            logError("report_modelId is NULL\n");
+            goto fail;
+        }
+        strcpy(zDev->report_modelId, report_modelId->valuestring);
+    }
 
     cJSON *arraySub, *hyKey, *hyKeyPrivate, *srcEndpoint, *dstEndpoint, *ClusterId, *AttributeId, *z3CmdType, *z3CmdId, *dataType;
     for (i = 0; i < arraySize; ++i)

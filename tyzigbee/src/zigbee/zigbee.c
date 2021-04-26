@@ -85,5 +85,6 @@ void zigbeeOpen(void)
 
     tyZigbeeInit();
     // zigbeeListPrintf();
-    // tuya_user_iot_permit_join(true);
+    tuya_user_iot_permit_join(true);
+    hyDevInitOnline();
 }

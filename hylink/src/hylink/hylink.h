@@ -5,7 +5,7 @@
 extern "C"
 {
 #endif
-
+    int hylinkReportHeart(void);
     void hylinkOpen(void);
     int hylinkClose(void);
     int addDevToHyList(const char *devId, const char *modelId);

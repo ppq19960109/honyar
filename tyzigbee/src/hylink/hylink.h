@@ -5,10 +5,10 @@
 extern "C"
 {
 #endif
-
+    void hyDevInitOnline(void);
     void hylinkOpen(void);
     int hylinkClose(void);
-    
+
 #ifdef __cplusplus
 }
 #endif

@@ -17,19 +17,26 @@
 #include "database.h"
 #include "scene_adapter.h"
 
-static int hylinkSendQueryVersion(void *devId)
+int hylinkReportHeart(void)
 {
   HylinkSend hylinkSend = {0};
-  hylinkSend.Command = 1;
-  strcpy(hylinkSend.Type, STR_DEVATTRI);
-  hylinkSend.DataSize = 1;
-  HylinkSendData hylinkSendData = {0};
-  hylinkSend.Data = &hylinkSendData;
-
-  strcpy(hylinkSendData.DeviceId, devId);
-  strcpy(hylinkSendData.Key, STR_VERSION);
+  hylinkSend.Command = 2;
+  hylinkSend.DataSize = 0;
   return hylinkSendFunc(&hylinkSend);
 }
+// static int hylinkSendQueryVersion(void *devId)
+// {
+//   HylinkSend hylinkSend = {0};
+//   hylinkSend.Command = 1;
+//   strcpy(hylinkSend.Type, STR_DEVATTRI);
+//   hylinkSend.DataSize = 1;
+//   HylinkSendData hylinkSendData = {0};
+//   hylinkSend.Data = &hylinkSendData;
+
+//   strcpy(hylinkSendData.DeviceId, devId);
+//   strcpy(hylinkSendData.Key, STR_VERSION);
+//   return hylinkSendFunc(&hylinkSend);
+// }
 int addDevToHyList(const char *devId, const char *modelId)
 {
   if (devId == NULL || modelId == NULL)
@@ -39,7 +46,7 @@ int addDevToHyList(const char *devId, const char *modelId)
   strcpy(hylinkDev->DeviceId, devId);
   strcpy(hylinkDev->ModelId, modelId);
   hylinkListAdd(hylinkDev);
-  hylinkSendQueryVersion(hylinkDev->DeviceId);
+  // hylinkSendQueryVersion(hylinkDev->DeviceId);
   return 0;
 }
 /*********************************************************************************

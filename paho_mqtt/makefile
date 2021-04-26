@@ -6,6 +6,7 @@ HYLINK_PATH:=libhylink_u86
 PAHOMQTT_PATH:=libs_u86/libpahomqttc
 CFLAGS +=-I$(PAHOMQTT_PATH)/include
 LDFLAGS += -L$(PAHOMQTT_PATH)/lib
+CURL_PATH:=libs_u86/libcurl
 else
 CROSS_COMPILE =arm-rockchip-linux-gnueabihf-
 INSTALL = "install"
@@ -33,15 +34,17 @@ CFLAGS += -I$(HYTOOL_PATH)/include/signal
 CFLAGS += -I$(HYTOOL_PATH)/include/tcp
 CFLAGS += -I$(HYTOOL_PATH)/include/timer
 CFLAGS += -I$(HYLINK_PATH)/include
+CFLAGS += -I$(CURL_PATH)/include
 CFLAGS += -Wall
 
 LDFLAGS += -L$(HYTOOL_PATH)/lib
 LDFLAGS += -L$(HYLINK_PATH)/lib
+LDFLAGS += -L$(CURL_PATH)/lib
 LDFLAGS += -L$(TOPDIR)
 
 LIBS += -Wl,--start-group	\
 		-Wl,-Bstatic  -lhytool -lhylink	-lpaho-mqtt3c \
-		-Wl,-Bdynamic -ldl -lm -lpthread -lrt 	\
+		-Wl,-Bdynamic -ldl -lm -lpthread -lrt -lcurl	\
 		-Wl,--end-group
 #-lpaho-mqtt3a -lpaho-mqtt3as -lpaho-mqtt3c -lpaho-mqtt3cs
 SRC := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))

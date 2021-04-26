@@ -24,6 +24,7 @@ extern "C"
         unsigned char DataSize;
     } HylinkSend;
 
+    int hylinkSendSingleFunc(const char *DeviceId, const char *ModelId, const char *Type, const char *Key, const char *Value);
     int hylinkSendFunc(HylinkSend *hylinkSend);
 #ifdef __cplusplus
 }

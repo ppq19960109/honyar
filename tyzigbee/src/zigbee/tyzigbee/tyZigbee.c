@@ -11,10 +11,17 @@
 #include "tyZigbee.h"
 #include "tyZigbeeZcl3.h"
 
+#ifndef ARCH
 /* must apply for uuid, authkey and product key from tuya iot develop platform */
 #define UUID "003tuyatestf7f149185"
 #define AUTHKEY "NeA8Wc7srpAZHEMuru867oblOLN2QCC1"
 #define PRODUCT_KEY "GXxoKf27eVjA7x1c"
+#else
+/* must apply for uuid, authkey and product key from tuya iot develop platform */
+#define UUID "tuya461dbc63aeeb991f"
+#define AUTHKEY "c8X4PR4wx1gMFaQlaZu5dfgVvVRwB8Ug"
+#define PRODUCT_KEY "fljmamufiym5fktz"
+#endif // !ARCH
 
 int getZcl3ProvateDataType(unsigned char dataType)
 {
@@ -146,11 +153,16 @@ int tyZigbeeInit(void)
         .storage_path = STORAGE_PATH,
         .cache_path = "/tmp/",
         .tty_device = "/dev/ttyS1",
+#ifndef ARCH
         .tty_baudrate = 115200,
         .eth_ifname = "eth0",
+#else
+        .tty_baudrate = 57600,
+        .eth_ifname = "eth0.2",
+#endif
         .ver = "1.0.0",
         .uz_cfg = "devices.json",
-        .log_level = TY_LOG_NOTICE};
+        .log_level = TY_LOG_WARN};
 
     ty_gw_infra_cbs_s gw_infra_cbs = {
         .get_uuid_authkey_cb = _iot_get_uuid_authkey_cb,

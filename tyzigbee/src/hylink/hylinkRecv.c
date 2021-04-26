@@ -189,6 +189,8 @@ int hylinkRecvJson(char *data)
     cJSON_Delete(root);
     return res;
 heart:
+    cJSON_Delete(root);
+    return 0;
 fail:
     cJSON_Delete(root);
     return -1;

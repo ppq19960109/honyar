@@ -40,6 +40,7 @@ extern "C"
     typedef struct
     {
         char modelId[33];
+        char report_modelId[33];
         char manuName[33];
         long heartbeatTime;
         ZigbeeAttr *attr;

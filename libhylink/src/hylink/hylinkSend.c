@@ -13,13 +13,15 @@
 #include "hylinkRecv.h"
 #include "hylinkSend.h"
 
-static char hyLinkSendBuf[1024];
+#define HYLINK_SEND_BUF_LEN (2050 - 3)
+static char hyLinkSendBuf[HYLINK_SEND_BUF_LEN + 3];
 int hylinkDispatch(const char *str, const int str_len)
 {
     hyLinkSendBuf[0] = 0x02;
-    strncpy(&hyLinkSendBuf[1], str, str_len);
-    hyLinkSendBuf[str_len + 1] = 0x03;
 
+    strncpy(&hyLinkSendBuf[1], str, str_len > HYLINK_SEND_BUF_LEN ? HYLINK_SEND_BUF_LEN : str_len);
+    hyLinkSendBuf[str_len + 1] = 0x03;
+    hyLinkSendBuf[str_len + 2] = 0x00;
     return runTransferCb(hyLinkSendBuf, str_len + 2, TRANSFER_CLIENT_WRITE);
 }
 int hylinkSend(void *ptr)

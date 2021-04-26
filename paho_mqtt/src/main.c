@@ -1,8 +1,11 @@
 #include "main.h"
+#include "mqtt_server.h"
 #include "hy_mqtt_client.h"
+#include "udp_broadcast.h"
 
 static int main_close(void)
 {
+  mqtt_serverClose();
   mqtt_client_close();
   hylinkClose();
   exit(0);
@@ -11,16 +14,17 @@ static int main_close(void)
 int main(void)
 {
   registerSystemCb(main_close, SYSTEM_CLOSE);
+  udp_broadcast();
 
   mqtt_client_open();
 
   hylinkOpen();
 
-  mqtt_client_publish("honyar/Report/12345678","test publush!!!!!!!!!!!!!");
-  while (1)
-  {
-    sleep(1);
-  }
+  mqtt_serverOpen();
+  // while (1)
+  // {
+  //   sleep(1);
+  // }
   main_close();
   return 0;
 }

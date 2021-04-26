@@ -9,7 +9,7 @@ CFLAGS +=-I$(SQLITE3_PATH)/include
 LDFLAGS +=-L$(SQLITE3_PATH)/lib
 CFLAGS +=-I$(PYTHON3_PATH)/include 
 LDFLAGS +=-L$(PYTHON3_PATH)/lib
-TUYA_PATH:=libtuya
+TUYA_PATH:=libtuya_u86
 CFLAGS += -DARCH
 PYHTON_LIB=
 else
@@ -25,6 +25,7 @@ RM = rm -rf
 AR = ar -rcs
 CP = cp -r
 MKDIR = mkdir -p
+STRIP = $(CROSS_COMPILE)strip
 
 TOPDIR = .
 
@@ -67,7 +68,7 @@ all: $(TARGET)
 
 $(TARGET) : $(OBJ)
 	$(CC) $^  $(CFLAGS) $(LDFLAGS) $(LIBS) -o $@
-
+	$(STRIP) $@
 clean :
 	$(RM) $(TARGET)
 	$(RM) $(OBJ)

@@ -141,7 +141,7 @@ void *addProfileDev(const char *path, const char *devId, const char *modelId, vo
         logError("file size 0");
         return NULL;
     }
-    logInfo("file size:%d", statfile.st_size);
+    logInfo("filePath:%s,file size:%d", filePath, statfile.st_size);
     int fd = open(filePath, O_RDONLY);
     if (fd < 0)
     {
