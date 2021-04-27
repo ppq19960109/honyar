@@ -87,19 +87,23 @@ int systemReset(void)
   //-------------------------------
   hylinkSend.Command = 1;
   hylinkSendFunc(&hylinkSend);
-
+  printf("scene_adapter_reset......\n");
   scene_adapter_reset();
   sleep(1);
+  printf("databseReset......\n");
   databseReset();
+  printf("SYSTEM_CLOSE......\n");
   runSystemCb(SYSTEM_CLOSE);
-  sleep(5);
+  sleep(10);
   sync();
+  printf("reboot......\n");
   reboot(RB_AUTOBOOT);
   return 0;
 }
 //--------------------------------------------------------
 int hylinkClose(void)
 {
+  printf("hylinkClose......\n");
   scene_adapter_close();
   hylinkListEmpty();
   databaseClose();

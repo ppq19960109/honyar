@@ -141,7 +141,7 @@ static int zigbeeReset(void)
 {
     system("rm -rf " STORAGE_PATH);
     system("rm -rf *.db*");
-    system("rm -rf *.txt");
+    system("rm -rf *log*");
     return 0;
 }
 

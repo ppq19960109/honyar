@@ -12,7 +12,10 @@
 #include "log_api.h"
 #ifndef ARCH
 #include "rkDriver.h"
+#else
+#include "u86_driver.h"
 #endif // !ARCH
+
 int mainClose(void)
 {
     hytoolClose();
@@ -28,6 +31,8 @@ int main()
 {
 #ifndef ARCH
     rkDriverOpen();
+#else
+    u86_diver();
 #endif // !ARCH
     // InitLog(LOG_DEBUG, NULL);
     registerSystemCb(mainClose, SYSTEM_CLOSE);
@@ -35,6 +40,11 @@ int main()
 
     logInfo("hylinkapp main start");
     hytoolOpen();
-    mainClose();
+    while (1)
+    {
+        sleep(1);
+    }
+    // logInfo("hylinkapp mainClose");
+    // mainClose();
     return 0;
 }

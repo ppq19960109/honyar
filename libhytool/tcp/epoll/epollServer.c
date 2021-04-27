@@ -6,6 +6,7 @@ typedef struct
     int epollfd;
     int listenNum;                                                      //全局变量，作为红黑树根
     struct EpollTcpEvent events[CLIENT_MAX_EVENTS + SERVER_MAX_EVENTS]; //自定义结构体类型数组. +2-->listen fd
+    int run_flag;
 } EpollServer;
 
 static EpollServer epollServer = {0};
@@ -112,6 +113,7 @@ static void epollListClose(struct EpollTcpEvent *event)
     {
         printf("test:%s,port:%d,fd:%d\n", event->addr, event->port, event->fd);
         Close(event->fd);
+        event->fd = 0;
         eventdel(epollServer.epollfd, event);
 
         epoll_list_del(event);
@@ -120,11 +122,15 @@ static void epollListClose(struct EpollTcpEvent *event)
 
 int epollServerClose(void)
 {
+    printf("epollServerClose\n");
+    if (epollServer.run_flag == 0)
+        return -1;
     for (int i = 0; i < CLIENT_MAX_EVENTS; ++i)
     {
         if (epollServer.events[i].status > 0 && epollServer.events[i].fd != 0)
         {
             Close(epollServer.events[i].fd);
+            epollServer.events[i].fd = 0;
             eventdel(epollServer.epollfd, &epollServer.events[i]);
         }
     }
@@ -133,12 +139,15 @@ int epollServerClose(void)
     if (epollServer.epollfd != 0)
     {
         Close(epollServer.epollfd);
+        epollServer.epollfd = 0;
     }
+    epollServer.run_flag = 0;
     return 0;
 }
 
 int epollServerOpen(int timeout)
 {
+    epollServer.run_flag = 1;
     int epollfd = epollServer.epollfd = epoll_create1(0); //创建红黑树,返回给全局 g_efd
     if (epollfd == -1)
     {
@@ -152,7 +161,7 @@ int epollServerOpen(int timeout)
     sigaddset(&mask, SIGUSR1);
 
     epoll_list_for_each(epollListListen, &epollServerList);
-    while (1)
+    while (epollServer.run_flag)
     {
         //调用eppoll_wait等待接入的客户端事件,epoll_wait传出的是满足监听条件的那些fd的struct epoll_event类型
         int nfd = epoll_pwait(epollfd, events, CLIENT_MAX_EVENTS + SERVER_MAX_EVENTS, timeout, &mask);

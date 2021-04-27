@@ -14,6 +14,7 @@ static int main_close(void)
 int main(void)
 {
   registerSystemCb(main_close, SYSTEM_CLOSE);
+  registerSystemCb(main_close, SYSTEM_RESET);
   udp_broadcast();
 
   mqtt_client_open();
@@ -25,6 +26,6 @@ int main(void)
   // {
   //   sleep(1);
   // }
-  main_close();
+  // main_close();
   return 0;
 }

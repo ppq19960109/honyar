@@ -10,6 +10,9 @@ CFLAGS +=-I$(CURL_PATH)/include
 LDFLAGS +=-L$(SQLITE3_PATH)/lib
 LDFLAGS +=-L$(CURL_PATH)/lib
 CFLAGS += -DARCH
+CFLAGS += -Iu86
+SRC += $(wildcard u86/*.c)
+INC += $(wildcard u86/*.h)
 else
 CROSS_COMPILE =arm-rockchip-linux-gnueabihf-
 INSTALL = "install"

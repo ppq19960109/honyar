@@ -21,9 +21,8 @@ static char *hylink_report_type[] = {
     "Event",
     "DevAttri",
     "DevsInfo",
-    "ReFactory",
-    "Ack",
     "LocalScene",
+    "ReFactory",
 };
 
 void hylinkAnalyDevInfo(cJSON *root, cJSON *Data)
@@ -150,7 +149,11 @@ int hylinkRecvAnaly(const char *json)
         logError("Type is no exist\n");
         goto fail;
     }
-
+    else if (type == 8)
+    {
+        runSystemCb(SYSTEM_RESET);
+        goto fail;
+    }
     char hyDevId[33] = {0};
 
     HyLinkDev *hyLinkDevBuf = NULL;
@@ -277,17 +280,7 @@ int hylinkRecvAnaly(const char *json)
             hylinkAnalyDevInfo(root, array_sub);
         }
         break;
-        case 7: //恢复出厂设置上报：”ReFactory”；
-        {
-            runSystemCb(SYSTEM_RESET);
-        }
-        break;
-        case 8: //Ack
-        {
-            // logDebug("type:Ack\n");
-        }
-        break;
-        case 9:
+        case 7:
         {
             cJSON *Op = cJSON_GetObjectItem(array_sub, "Op");
             if (strcmp("ExecScene", Op->valuestring) == 0)

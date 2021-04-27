@@ -65,7 +65,7 @@ static int zigbee_connect(void)
 
 static int hylink_send(void *data, unsigned int len)
 {
-    printf("hylink_send:%s\n", data);
+    
 #ifdef USE_EPOLL
     return epollServerSend(&hylink_myevents, data, len);
 #else

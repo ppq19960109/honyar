@@ -48,6 +48,7 @@ static int udp_broadcast_response(const int fd, struct sockaddr_in *from, const 
     cJSON_AddStringToObject(response, "Port", port);
     cJSON_AddStringToObject(response, "Mac", gateway_mac);
     cJSON_AddStringToObject(response, "Model", "U2-86GW-AC(TY)");
+    cJSON_AddStringToObject(response, "Ver", SOFTWARE_VERSION);
 
     char *response_json = cJSON_PrintUnformatted(response);
     sendto(fd, response_json, strlen(response_json), 0, (struct sockaddr *)from, sizeof(struct sockaddr));

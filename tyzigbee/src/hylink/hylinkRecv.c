@@ -86,6 +86,13 @@ int hylinkRecvJson(char *data)
         logError("Type is no exist\n");
         goto fail;
     }
+    else if (type == REFACTORY)
+    {
+        logWarn("system REFACTORY");
+        runSystemCb(HYLINK_RESET);
+        runSystemCb(ZIGBEE_RESET);
+        exit(0);
+    }
     int res;
     cJSON *array_sub = NULL;
     int array_size = cJSON_GetArraySize(Data);
@@ -120,11 +127,7 @@ int hylinkRecvJson(char *data)
             res = runZigbeeCb((void *)DeviceId->valuestring, NULL, NULL, NULL, ZIGBEE_DEV_LEAVE);
         }
         break;
-        case REFACTORY:
-            runSystemCb(HYLINK_RESET);
-            runSystemCb(ZIGBEE_RESET);
-            exit(0);
-            break;
+
         case RESTART:
             break;
         case DEVSINFO:
