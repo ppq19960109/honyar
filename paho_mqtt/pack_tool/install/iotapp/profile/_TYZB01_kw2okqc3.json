@@ -1,6 +1,7 @@
 {
     "modelId": "TS0203",
     "manuName": "_TYZB01_kw2okqc3",
+    "heart_type": 1,
     "heartbeatTime": 43200,
     "devName": "门窗磁传感器",
     "deviceType": "0",

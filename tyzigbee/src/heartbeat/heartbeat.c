@@ -29,7 +29,6 @@ int heartbeat(void)
         logWarn("hyLink_kh_foreach_value heartbeat");
         if (hyDev != NULL && hyDev->activeTime != 0)
         {
-            runZigbeeCb((void *)hyDev->DeviceId, (void *)hyDev->ModelId, STR_VERSION, NULL, ZIGBEE_DEV_DISPATCH);
             zigbeeDev *zDev = (zigbeeDev *)zigbeeListGet(hyDev->ModelId);
             if (zDev == NULL)
             {
@@ -54,6 +53,15 @@ int heartbeat(void)
 
                 // hylinkSendFunc(&hylinkSend);
                 hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ONOFF, STR_ONLINE, "0");
+            }
+            else if (curTime > hyDev->activeTime + HEART_TIMER)
+            {
+                if (zDev->heart_type != HEART_AUTO_REPORT)
+                    runZigbeeCb((void *)hyDev->DeviceId, (void *)hyDev->ModelId, STR_VERSION, NULL, ZIGBEE_DEV_DISPATCH);
+            }
+            else
+            {
+                logWarn("hy dev online %s,%s", hyDev->DeviceId, hyDev->ModelId);
             }
         }
     }

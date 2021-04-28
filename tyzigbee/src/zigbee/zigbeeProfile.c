@@ -66,6 +66,16 @@ static void zigbeeParseJson(char *str)
     strcpy(zDev->manuName, manuName->valuestring);
     zDev->heartbeatTime = heartbeatTime->valueint;
 
+    if (cJSON_HasObjectItem(root, "heart_type"))
+    {
+        cJSON *heart_type = cJSON_GetObjectItem(root, "heart_type");
+        if (heart_type == NULL)
+        {
+            logError("heart_type is NULL\n");
+            goto fail;
+        }
+        zDev->heart_type = heart_type->valueint;
+    }
     if (cJSON_HasObjectItem(root, "report_modelId"))
     {
         cJSON *report_modelId = cJSON_GetObjectItem(root, "report_modelId");

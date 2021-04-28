@@ -5,7 +5,7 @@
 extern "C"
 {
 #endif
-
+#define HEART_TIMER 300 //300s
     typedef enum
     {
         SYSTEM_CLOSE = 0,

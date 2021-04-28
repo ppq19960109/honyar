@@ -28,7 +28,8 @@ static int msgarrvd(void *context, char *topicName, int topicLen, MQTTClient_mes
     // }
     // putchar('\n');
     logInfo("   message payload: %.*s\n", message->payloadlen, (char *)message->payload);
-    hylinkDispatch(message->payload, message->payloadlen);
+    // hylinkDispatch(message->payload, message->payloadlen);
+    runTransferCb(message->payload, message->payloadlen, TRANSFER_CLIENT_WRITE);
 
     MQTTClient_freeMessage(&message);
     MQTTClient_free(topicName);
@@ -49,19 +50,36 @@ static char gateway_mac[18];
 static char subscribe_topic[64];
 static char publish_topic[100];
 
-int mqtt_client_publish(const char *topicName, char *payload)
+#define MQTT_SEND_BUF_LEN (2050 - 3)
+static char mqttSendBuf[MQTT_SEND_BUF_LEN + 3];
+
+int mqtt_client_publish(const char *topicName, char *payload, int payloadlen)
 {
     int ret;
     MQTTClient_message pubmsg = MQTTClient_message_initializer;
     MQTTClient_deliveryToken token;
 
     pubmsg.payload = payload;
-    pubmsg.payloadlen = (int)strlen(payload);
+    pubmsg.payloadlen = payloadlen;
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
     if (gateway_online)
         ret = MQTTClient_publishMessage(client, topicName, &pubmsg, &token);
     logInfo("publish topic:%s\npayload:%s\n", topicName, payload);
+    return ret;
+}
+
+static int mqttSend(const char *str, const int str_len)
+{
+    int ret = -1;
+    mqttSendBuf[0] = 0x02;
+
+    strncpy(&mqttSendBuf[1], str, str_len > MQTT_SEND_BUF_LEN ? MQTT_SEND_BUF_LEN : str_len);
+    mqttSendBuf[str_len + 1] = 0x03;
+    mqttSendBuf[str_len + 2] = 0x00;
+
+    ret = mqtt_client_publish(publish_topic, mqttSendBuf, str_len + 2);
+    ret = runTransferCb(mqttSendBuf, str_len + 2, TRANSFER_SERVER_HYLINK_WRITE);
     return ret;
 }
 
@@ -76,6 +94,7 @@ int mqtt_client_subscribe(const char *topicName)
     }
     return ret;
 }
+
 static int mqtt_Recv(void *recv, unsigned int len)
 {
     char *json = (char *)recv;
@@ -131,8 +150,9 @@ static int mqtt_Recv(void *recv, unsigned int len)
 
 heart:
     payload = cJSON_PrintUnformatted(root);
-    ret = mqtt_client_publish(publish_topic, payload);
-    runTransferCb(payload, strlen(payload), TRANSFER_SERVER_HYLINK_WRITE);
+
+    ret = mqttSend(payload, strlen(payload));
+
     cJSON_free(payload);
 
     cJSON_Delete(root);

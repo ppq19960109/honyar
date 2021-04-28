@@ -42,6 +42,8 @@ extern "C"
         char modelId[33];
         char report_modelId[33];
         char manuName[33];
+    #define HEART_AUTO_REPORT 1
+        char heart_type; //0-default 1-auto report
         long heartbeatTime;
         ZigbeeAttr *attr;
         char attrLen;

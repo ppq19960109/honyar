@@ -36,7 +36,7 @@ int hytoolOpen(void)
     signalQuit();
 
     heartTimerid = POSIXTimerCreate(1, timerThreadHandler);
-    POSIXTimerSet(heartTimerid, 300, 300);
+    POSIXTimerSet(heartTimerid, HEART_TIMER, HEART_TIMER);
 
     clientOpen();
     return 0;

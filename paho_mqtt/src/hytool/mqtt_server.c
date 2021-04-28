@@ -14,7 +14,8 @@ ThreadTcpServer hylink_threadTcpServer;
 static int hylink_recv(char *data, unsigned int len)
 {
     printf("---hylink_recv:%d,%s ...\n", len, data);
-    hylinkDispatch(data, len);
+    // hylinkDispatch(data, len);
+    runTransferCb(data, len, TRANSFER_CLIENT_WRITE);
     return 0;
 }
 
