@@ -29,7 +29,7 @@
 #define ETH_NAME "eth0.2"
 #define TOKEN_URL "http://home.sikelai.cn:8328/token/applyToken"
 #define LOCAL_TCP_PORT 8001
-#define SOFTWARE_VERSION "1.0.2"
+#define SOFTWARE_VERSION "1.0.3"
 
 #define MQTT_ADDRESS "post-cn-oew22m4al1d.mqtt.aliyuncs.com"
 // #define MQTT_CLIENTID "GID_HONYAR@@@0003"

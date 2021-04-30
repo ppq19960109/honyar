@@ -5,8 +5,9 @@
 
 static int main_close(void)
 {
-  mqtt_serverClose();
   mqtt_client_close();
+  mqtt_serverClose();
+
   hylinkClose();
   exit(0);
   return 0;

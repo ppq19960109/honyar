@@ -20,6 +20,7 @@ int hylink_connect(void)
     if (!zigbee_init_flag)
     {
         zigbee_init_flag = 1;
+        // usleep(2000);
         zigbeeOpen();
     }
     return 0;

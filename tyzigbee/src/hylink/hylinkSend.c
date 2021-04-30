@@ -64,11 +64,11 @@ int hylinkSendSingleFunc(const char *DeviceId, const char *ModelId, const char *
         }
         if (strlen(zDev->report_modelId) == 0)
         {
-            cJSON_AddStringToObject(arrayItem, STR_MODELID, zDev->report_modelId);
+            cJSON_AddStringToObject(arrayItem, STR_MODELID, hyDev->ModelId);
         }
         else
         {
-            cJSON_AddStringToObject(arrayItem, STR_MODELID, hyDev->ModelId);
+            cJSON_AddStringToObject(arrayItem, STR_MODELID, zDev->report_modelId);
         }
     }
 

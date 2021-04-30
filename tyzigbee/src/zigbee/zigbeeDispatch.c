@@ -208,7 +208,13 @@ int zigbeeZclDispatch(void *devId, void *modelId, void *key, void *value)
         logError("zDev is null");
         return -1;
     }
-
+    if (value == NULL && key != NULL)
+    {
+        if (strcmp(STR_VERSION, key) == 0)
+        {
+            hyDev->version = 1;
+        }
+    }
     unsigned char msg[33] = {0};
     ty_z3_aps_frame_s frame = {0};
     strcpy(frame.id, devId);

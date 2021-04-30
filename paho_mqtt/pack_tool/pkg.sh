@@ -1,5 +1,5 @@
 #!/bin/bash
-SOFTWARE_VERSION="1.0.2"
+SOFTWARE_VERSION="1.0.3"
 #compress directory and compress file name
 PKG_DIRNAME="install"
 PKG_FINAL_FILENAME="upgrade_${SOFTWARE_VERSION}_98313007.bin"

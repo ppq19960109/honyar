@@ -5,8 +5,9 @@ BASE_PATH="/userdata"
 start() {
     echo "Starting honyar: "
     cd $BASE_PATH/hyapp && ./hylinkapp > /dev/null &
-    cd $BASE_PATH/app && ./mqttapp &
+    sleep 1
     cd $BASE_PATH/iotapp && ./tyzigbeeapp > /dev/null &
+    cd $BASE_PATH/app && ./mqttapp &
     [ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 

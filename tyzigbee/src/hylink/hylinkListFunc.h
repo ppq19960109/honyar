@@ -20,6 +20,7 @@ extern "C"
         char DeviceId[33];
         char ModelId[33];
         char Version[33];
+        char version;
         long activeTime;
     } HylinkDev;
 

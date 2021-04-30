@@ -101,30 +101,34 @@ static int hylinkOnlineFresh(void *devId, void *null, void *version, void *null1
         // runCmdCb(devId, CMD_DELETE_DEV);
         return -1;
     }
-
-    hyDev->activeTime = time(NULL);
-    //-------------------------------
+    logInfo("hylinkOnlineFresh");
     strcpy(hyDev->Version, version);
+    //-------------------------------
+    if (hyDev->activeTime == 0 || hyDev->version > 0)
+    {
+        hyDev->version = 0;
+        logInfo("hylinkOnlineFresh:%s,online", devId);
+        // HylinkSend hylinkSend = {0};
+        // HylinkSendData hylinkSendData = {0};
+        // hylinkSend.Data = &hylinkSendData;
+        // hylinkSend.DataSize = 1;
 
-    // HylinkSend hylinkSend = {0};
-    // HylinkSendData hylinkSendData = {0};
-    // hylinkSend.Data = &hylinkSendData;
-    // hylinkSend.DataSize = 1;
+        // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
+        // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
 
-    // strcpy(hylinkSendData.DeviceId, hyDev->DeviceId);
-    // strcpy(hylinkSendData.ModelId, hyDev->ModelId);
+        // strcpy(hylinkSend.Type, STR_ONOFF);
+        // strcpy(hylinkSendData.Key, STR_ONLINE);
+        // strcpy(hylinkSendData.Value, "1");
+        // hylinkSendFunc(&hylinkSend);
 
-    // strcpy(hylinkSend.Type, STR_ONOFF);
-    // strcpy(hylinkSendData.Key, STR_ONLINE);
-    // strcpy(hylinkSendData.Value, "1");
-    // hylinkSendFunc(&hylinkSend);
-
-    // strcpy(hylinkSend.Type, STR_ATTRIBUTE);
-    // strcpy(hylinkSendData.Key, STR_VERSION);
-    // strcpy(hylinkSendData.Value, hyDev->Version);
-    // hylinkSendFunc(&hylinkSend);
-    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ONOFF, STR_ONLINE, "1");
-    hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ATTRIBUTE, STR_VERSION, hyDev->Version);
+        // strcpy(hylinkSend.Type, STR_ATTRIBUTE);
+        // strcpy(hylinkSendData.Key, STR_VERSION);
+        // strcpy(hylinkSendData.Value, hyDev->Version);
+        // hylinkSendFunc(&hylinkSend);
+        hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ONOFF, STR_ONLINE, "1");
+        hylinkSendSingleFunc(hyDev->DeviceId, NULL, STR_ATTRIBUTE, STR_VERSION, hyDev->Version);
+    }
+    hyDev->activeTime = time(NULL);
     return 0;
 }
 
