@@ -9,6 +9,18 @@
 #include <time.h>
 #include <syslog.h>
 
+struct pidInfo_t
+{
+    char *pidName;
+    char *pidPath;
+};
+
+static const struct pidInfo_t pidInfo[] = {
+    {.pidName = "hyapp", .pidPath = "/userdata/hyapp"},
+    {.pidName = "tyzigbeeapp", .pidPath = "/userdata/iotapp"},
+    {.pidName = "alinkapp", .pidPath = "/userdata/app"},
+};
+
 static char cmd[96];
 
 static int initDaemon(void)
@@ -103,25 +115,13 @@ static int getProcessNum(char *Name)
     return buf[0];
 }
 
-struct pidInfo_t
-{
-    char *pidName;
-    char *pidPath;
-};
-
-static const struct pidInfo_t pidInfo[] = {
-    {.pidName = "hydevapp", .pidPath = "/userdata/hyapp"},
-    {.pidName = "hy_server_iot", .pidPath = "/userdata/iotapp"},
-    {.pidName = "hilinkapp", .pidPath = "/userdata/app"},
-    {.pidName = "alilinkapp", .pidPath = "/userdata/app"},
-};
-
 int main()
 {
-    unsigned char i, pidCount;
-    const int pidInfoNum = sizeof(pidInfo) / sizeof(pidInfo[0]);
+    static unsigned char i, pidCount;
+    static const int pidInfoNum = sizeof(pidInfo) / sizeof(pidInfo[0]);
 
-    time_t now;
+    static time_t now;
+
     initDaemon();
     syslog(LOG_USER | LOG_INFO, "DaemonProcess Start!\n");
 
@@ -137,21 +137,11 @@ int main()
             if (pidCount != '1')
             {
                 time(&now);
-                syslog(LOG_USER | LOG_INFO, "SystemTime: \t%s\t\n", ctime(&now));
-                syslog(LOG_USER | LOG_INFO, "%s pidCount %d\n", pidInfo[i].pidName, pidCount);
+                syslog(LOG_USER | LOG_INFO, "SystemTime: %s\n", ctime(&now));
+                syslog(LOG_USER | LOG_INFO, "%s pidCount error:%d\n", pidInfo[i].pidName, pidCount);
                 if (pidCount == 0)
                 {
-                    sprintf(cmd, "%s/%s", pidInfo[i].pidPath, pidInfo[i].pidName);
-                    if ((access(cmd, F_OK)) == 0)
-                    {
-                        sprintf(cmd, "cd %s;./%s &", pidInfo[i].pidPath, pidInfo[i].pidName);
-                    }
-                    else
-                    {
-                        sprintf(cmd, "chmod 777 /userdata/update/upgrade_backup.bin");
-                        system(cmd);
-                        sprintf(cmd, "cd /tmp;/userdata/update/upgrade_backup.bin");
-                    }
+                    sprintf(cmd, "cd %s;./%s &", pidInfo[i].pidPath, pidInfo[i].pidName);
                     system(cmd);
                 }
                 else
@@ -165,4 +155,5 @@ int main()
         }
         // signal(SIGCHLD, SIG_IGN);
     }
+    return 0;
 }

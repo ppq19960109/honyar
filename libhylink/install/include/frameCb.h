@@ -11,7 +11,6 @@ extern "C"
     typedef enum
     {
         SYSTEM_CLOSE = 0,
-        SYSTEM_RESTART,
         SYSTEM_RESET,
         LED_DRIVER_TIMER_OPEN,
         LED_DRIVER_TIMER_CLOSE,

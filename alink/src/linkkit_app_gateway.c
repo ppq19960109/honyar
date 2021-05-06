@@ -367,7 +367,7 @@ static void main_before_init(iotx_linkkit_dev_meta_info_t *master_meta_info)
             memcpy(meta.product_key, master_meta_info->product_key, strlen(master_meta_info->product_key));
             memcpy(meta.product_secret, master_meta_info->product_secret, strlen(master_meta_info->product_secret));
             memcpy(meta.device_name, master_meta_info->device_name, strlen(master_meta_info->device_name));
-            EXAMPLE_TRACE("IOT_Dynamic_Register start\n");
+            EXAMPLE_TRACE("IOT_Dynamic_Register start device_name:%s\n", meta.device_name);
             int res = IOT_Dynamic_Register(IOTX_HTTP_REGION_SHANGHAI, &meta);
             if (res < 0)
             {

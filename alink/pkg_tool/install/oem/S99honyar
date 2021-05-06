@@ -1,0 +1,39 @@
+#!/bin/sh
+
+APP_NAME="alinkapp"
+BASE_PATH="/userdata"
+start() {
+    echo "Starting honyar: "
+
+    cd $BASE_PATH/hyapp && ./hylinkapp > /dev/null &
+    sleep 1
+    cd $BASE_PATH/iotapp && ./tyzigbeeapp > /dev/null &
+    cd $BASE_PATH/app && ./$APP_NAME &
+    $BASE_PATH/hydaemon
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+    echo "Stopping honyar: "
+    killall hydaemon $APP_NAME tyzigbeeapp hylinkapp
+
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        stop
+        start
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?

@@ -190,7 +190,7 @@ int HAL_SemaphoreWait(void *sem, uint32_t timeout_ms)
                 s = 1;
             }
 
-            ts.tv_sec += timeout_ms / 1000 + s;
+            ts.tv_sec += timeout_ms / 10000 + s;
 
         } while (((s = sem_timedwait(sem, &ts)) != 0) && errno == EINTR);
 
