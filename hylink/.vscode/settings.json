@@ -27,7 +27,11 @@
         "hytool.h": "c",
         "hylink.h": "c",
         "stdlib.h": "c",
-        "base_api.h": "c"
+        "base_api.h": "c",
+        "cjson.h": "c",
+        "link_list.h": "c",
+        "scene_sync.h": "c",
+        "scene_adapter.h": "c"
     },
     "python.formatting.provider": "yapf"
 }

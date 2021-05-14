@@ -22,6 +22,7 @@
 #include "cjson.h" 
 #include "json_key.h" 
 #include "scene_timer.h" 
+#include "scene_sync.h"
 
 /*数据库条件表名*/
 #define DB_TABLE_NAME_SCENE				"scene_list"
@@ -6821,30 +6822,107 @@ scene_list_event(
 				p = p->next;
 				continue;
 			}
-
-			int iTrue = 0;
-			event_cond_t *pstCond = &(pstCondNode->stCond);
-			iTrue = _scene_event_cond_is_true(pstCond, pstEventInfo);
 			
-			HY_DEBUG("Event Cond is %s\n", iTrue == 1 ? "True" : "False");
-			/*更新事件状态*/
-			if(strncmp(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN))
+			if(!strcmp(pstCondNode->stCond.acTriggerType, "StateSync"))
 			{
-				strncpy(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN);
+				HY_DEBUG("StateSync Trigger\n");
+				event_cond_t *pstCond = &(pstCondNode->stCond);
 
-				/*存储数据库*/
-				cond_list_class_t *pstCondClass = 
-					(cond_list_class_t *)(p->stCondPtr.pstCondList);
-	
-				iRet = pstCondClass->cond_set_db(pstCondClass, pstCond);
-				if(NoErr != iRet)
+				if(strncmp(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN))
 				{
-					HY_ERROR("Failed to add manual trigger condition.\n");
-					return iRet;
+					/*本地多控逻辑*/
+					/*判断该事件是主动上报还是请求回应*/
+					if(1 == scene_sync_event(
+							pstEventInfo->acDevId, 
+							pstEventInfo->acKey, 
+							pstEventInfo->acValue
+						)
+					)
+					{
+						/*请求回应，不做处理*/
+						HY_DEBUG("The event is a response.\n");
+					}
+					else
+					{
+						/*主动上报*/
+						HY_DEBUG("The event is a report.\n");
+						/*获取需要同步的设备属性*/
+						cond_list_class_t* pstCondList = 
+							pstScene->stOrCond.pstEventCondList;
+						event_cond_t astCondInfo[COND_MAX_NUM] = {0};
+						int iCondCount = COND_MAX_NUM;
+						_this->event_or_cond_get_list(
+							_this,
+							pstScene, 
+							astCondInfo,
+							&iCondCount
+						);
+						//pstCondList->cond_get_list(
+						//	pstCondList, astCondInfo, &iCondCount);
+						HY_DEBUG("iCondCount = %d.\n", iCondCount);
+						/*下发设备同步指令*/
+						int i = 0;
+						for(i = 0; i < iCondCount; i++)
+						{
+							if(!strncmp(pstEventInfo->acDevId, astCondInfo[i].acDevId, DEV_ID_MAX_LEN) &&
+								!strncmp(pstEventInfo->acKey, astCondInfo[i].acKey, KEY_MAX_LEN))
+							{
+								continue;
+							}
+							scene_sync_event_req_add(
+								astCondInfo[i].acDevId, 
+								astCondInfo[i].acKey, 
+								pstEventInfo->acValue
+							);
+						}
+					}
+					/*更新事件状态*/
+					strncpy(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN);
+
+					/*存储数据库*/
+					cond_list_class_t *pstCondClass = 
+						(cond_list_class_t *)(p->stCondPtr.pstCondList);
+		
+					iRet = pstCondClass->cond_set_db(pstCondClass, pstCond);
+					if(NoErr != iRet)
+					{
+						return iRet;
+					}
 				}
 			}
-			/*更新条件相关真假*/
-			scene_event_cond_true_update(_this, iTrue, p);
+			else
+			{
+				/*本地场景逻辑*/
+				int iTrue = 0;
+				event_cond_t *pstCond = &(pstCondNode->stCond);
+				iTrue = _scene_event_cond_is_true(pstCond, pstEventInfo);
+				
+				HY_DEBUG("Event Cond is %s\n", iTrue == 1 ? "True" : "False");
+				/*更新事件状态*/
+				if(strncmp(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN))
+				{
+					strncpy(pstCond->acLastValue, pstEventInfo->acValue, VALUE_MAX_LEN);
+
+					/*存储数据库*/
+					cond_list_class_t *pstCondClass = 
+						(cond_list_class_t *)(p->stCondPtr.pstCondList);
+		
+					iRet = pstCondClass->cond_set_db(pstCondClass, pstCond);
+					if(NoErr != iRet)
+					{
+						HY_ERROR("Failed to add manual trigger condition.\n");
+						return iRet;
+					}
+				}
+				/*更新条件相关真假*/
+				scene_event_cond_true_update(_this, iTrue, p);
+			}
+
+
+				
+			
+
+			
 			
 			p = p->next;
 		}
@@ -7142,6 +7220,12 @@ scene_exec(void *arg)
 	{
 		/*减少cpu的占用*/
 		usleep(200 * 1000);
+
+#if 1
+		/*本地状态同步处理*/
+		scene_sync_event_req_exec();
+#endif
+
 		if(0 == pstQueue->size(pstQueue))
 		{
 			goto scene_exec_loop_end;

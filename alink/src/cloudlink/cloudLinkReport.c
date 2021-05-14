@@ -32,7 +32,7 @@ static int cloudSingleEventReport(HyLinkDev *hyLinkDev, CloudLinkDev *cloudLinkD
             if (*(int *)hyLinkDev->attr[hyAttr].value == 0)
                 goto quit;
         }
-        user_post_event(cloudLinkDev->id, cloudLinkDev->eventAttr[i].eventId, json);
+        user_post_event(cloudLinkDev->eventAttr[i].eventId, json);
     quit:
         if (json != NULL)
         {

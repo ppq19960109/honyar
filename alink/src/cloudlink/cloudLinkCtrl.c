@@ -5,7 +5,7 @@
 #include "cloudLinkCtrl.h"
 
 #include "scene.h"
-
+#include "more_control.h"
 /*********************************************************************************
   *Function:  cloudLinkCtrl
   * Description： receive cloud control information
@@ -43,6 +43,22 @@ int cloudLinkServicCtrl(const int devid, const char *serviceid, const int servic
     if (strncmp(serviceid, "TriggerGatewayService", serviceid_len) == 0)
     {
         return localScene(devid, serviceid, serviceid_len, request, response, response_len);
+    }
+    else if (strncmp(serviceid, "AddBindSwitch", serviceid_len) == 0)
+    {
+        return add_mod_more_control(devid, serviceid, serviceid_len, request, response, response_len);
+    }
+    else if (strncmp(serviceid, "ModifyBindSwitch", serviceid_len) == 0)
+    {
+        return add_mod_more_control(devid, serviceid, serviceid_len, request, response, response_len);
+    }
+    else if (strncmp(serviceid, "QueryBindSwitch", serviceid_len) == 0)
+    {
+        return query_more_control(devid, serviceid, serviceid_len, request, response, response_len);
+    }
+    else if (strncmp(serviceid, "DeleteBindSwitch", serviceid_len) == 0)
+    {
+        return delete_more_control(devid, serviceid, serviceid_len, request, response, response_len);
     }
     /* Parse Root */
     cJSON *root = cJSON_Parse(request);

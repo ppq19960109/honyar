@@ -5,7 +5,7 @@
 extern "C"
 {
 #endif
-
+int hylink_scene_send(char *pCmd, int cmdLen);
 int scene_adapter_open(void);
 int scene_adapter_close(void);
 int scene_adapter_reset(void);

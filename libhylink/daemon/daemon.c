@@ -16,7 +16,7 @@ struct pidInfo_t
 };
 
 static const struct pidInfo_t pidInfo[] = {
-    {.pidName = "hyapp", .pidPath = "/userdata/hyapp"},
+    {.pidName = "hylinkapp", .pidPath = "/userdata/hyapp"},
     {.pidName = "tyzigbeeapp", .pidPath = "/userdata/iotapp"},
     {.pidName = "alinkapp", .pidPath = "/userdata/app"},
 };

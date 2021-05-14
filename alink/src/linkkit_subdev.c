@@ -291,10 +291,11 @@ fail:
     return res;
 }
 
-int user_post_event(int devid, char *event_id, char *event_payload)
+int user_post_event(char *event_id, char *event_payload)
 {
     int res = -1;
-
+    user_example_ctx_t *user_example_ctx = user_example_get_ctx();
+    int devid = user_example_ctx->master_devid;
     EXAMPLE_TRACE("Post Event %s,%s", event_id, event_payload);
     if (event_payload != NULL)
     {

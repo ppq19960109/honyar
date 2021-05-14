@@ -24,4 +24,4 @@ rm -rf *
 echo "Successfully installed"
 
 echo "App reboot......"
-# reboot
+reboot

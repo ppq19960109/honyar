@@ -15,7 +15,7 @@
 #define CMD_TYPE_LOCAL_SCENE "LocalScene" //本地场景指令
 
 /*由于本地场景下发的控制指令，无法携带会话相关属性，所有只能新开接口*/
-static int hylink_scene_send(char *pCmd, int cmdLen)
+int hylink_scene_send(char *pCmd, int cmdLen)
 {
     logWarn("local scene cmd:%s\n", pCmd);
     cJSON *root = cJSON_Parse(pCmd);

@@ -297,7 +297,7 @@ int addActions(const char *localSceneId, cJSON *actions)
             if (cJSON_HasObjectItem(params, "sceneId"))
             {
                 cJSON *sceneId = cJSON_GetObjectItem(params, "sceneId");
-                selectDatabseBySceneId(localSceneId, sceneId->valuestring, addActionsForSceneId);
+                table0_select(localSceneId, sceneId->valuestring, addActionsForSceneId);
             }
             else
             {

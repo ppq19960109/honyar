@@ -10,7 +10,7 @@ extern "C"
     int sceneHyDispatch(cJSON *DataArray);
 
     int localScene(const int devid, const char *serviceid, const int serviceid_len, const char *request, char **response, int *response_len);
-
+    int delete_single_scene(const char *ruleId);
 #ifdef __cplusplus
 }
 #endif

@@ -15,6 +15,9 @@
         "wrappers.h": "c",
         "type_traits": "c",
         "base64.h": "c",
-        "reboot.h": "c"
+        "reboot.h": "c",
+        "cloudlinkctrl.h": "c",
+        "scene_add.h": "c",
+        "scene_database.h": "c"
     }
 }

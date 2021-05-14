@@ -14,18 +14,9 @@ int sceneReport(void *req, unsigned int len)
     logInfo("cJSON_free(json); send json:%s\n", json);
     cJSON_Delete(root);
 
-    CloudLinkDev *cloudLinkDev = cloudLinkListGetById(STR_GATEWAY_DEVID);
-    if (cloudLinkDev == NULL)
-    {
-        logError("gw cloudLinkDev is NULL");
-        goto fail;
-    }
-    user_post_event(cloudLinkDev->id, "ReportScene", json);
+    user_post_event("ReportScene", json);
     cJSON_free(json);
     return 0;
-fail:
-    cJSON_free(json);
-    return -1;
 }
 //-------------------------------
 int sceneHyDispatch(cJSON *DataArray)
@@ -51,7 +42,7 @@ int sceneHyDispatch(cJSON *DataArray)
     return res;
 }
 
-static int delete_single_scene(const char *ruleId)
+int delete_single_scene(const char *ruleId)
 {
     cJSON *delArray = cJSON_CreateArray();
 
@@ -61,11 +52,7 @@ static int delete_single_scene(const char *ruleId)
     cJSON_AddStringToObject(arrayItem, "Id", ruleId);
 
     int res = sceneHyDispatch(delArray);
-    if (res >= 0)
-    {
-        //delete scene id and rule id for database
-        deleteDatabse(ruleId);
-    }
+
     return res;
 }
 
@@ -84,11 +71,21 @@ static int delScene(cJSON *ruleIds)
             if (ruleIdsSub == NULL)
                 continue;
             res = delete_single_scene(ruleIdsSub->valuestring);
+            if (res >= 0)
+            {
+                //delete scene id and rule id for database
+                table0_delete(ruleIdsSub->valuestring);
+            }
         }
     }
     else
     {
         res = delete_single_scene(ruleIds->valuestring);
+        if (res >= 0)
+        {
+            //delete scene id and rule id for database
+            table0_delete(ruleIds->valuestring);
+        }
     }
     return res;
 }
@@ -153,7 +150,7 @@ static int addScene(const char *sceneId, cJSON *rules, const int isUpdate)
     if (res >= 0)
     {
         //add scene id and rule id for database
-        insertDatabse(ruleId->valuestring, sceneId);
+        table0_insert(ruleId->valuestring, sceneId);
     }
     //---------------------------------
     cJSON *triggers = cJSON_GetObjectItem(rules, "triggers");

@@ -33,22 +33,14 @@ int reportGateWayInfo(const char *deviceName, const char *productKey, const int 
     cJSON_AddStringToObject(ReportInfo, "ReportGateWayInfo", json);
     char *info = cJSON_PrintUnformatted(ReportInfo);
     // EXAMPLE_TRACE("info:%s", info);
-    CloudLinkDev *cloudLinkDev = cloudLinkListGetById(STR_GATEWAY_DEVID);
-    if (cloudLinkDev == NULL)
-        goto fail;
-    user_post_event(cloudLinkDev->id, "GateWayInfo", info);
+
+    user_post_event("GateWayInfo", info);
 
     cJSON_Delete(ReportInfo);
     free(info);
     free(json);
 
     return 0;
-fail:
-    cJSON_Delete(ReportInfo);
-    free(info);
-    free(json);
-
-    return -1;
 }
 static int cloudSubDevStatus(CloudLinkDev *cloudLinkDev, unsigned int status)
 {
