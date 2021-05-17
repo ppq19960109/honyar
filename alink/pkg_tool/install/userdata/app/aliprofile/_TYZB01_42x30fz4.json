@@ -23,18 +23,13 @@
         },
         {
             "hyKey": "LedEnable",
-            "cloudKey": "indicator",
+            "cloudKey": "BackLightMode",
             "valueType": 0
         },
         {
             "hyKey": "PowerOffProtection",
-            "cloudKey": "power_off_memory",
+            "cloudKey": "FailureProtectionSwitch",
             "valueType": 0
-        },
-        {
-            "hyKey": "Version",
-            "cloudKey": "version",
-            "valueType": 2
         }
     ]
 }

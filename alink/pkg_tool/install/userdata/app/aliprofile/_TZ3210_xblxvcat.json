@@ -8,22 +8,22 @@
     "attr": [
         {
             "hyKey": "Switch_1",
-            "cloudKey": "powerstate_1",
+            "cloudKey": "PowerSwitch_1",
             "valueType": 0
         },
         {
             "hyKey": "LedEnable",
-            "cloudKey": "indicator",
+            "cloudKey": "BackLightMode",
             "valueType": 0
         },
         {
             "hyKey": "PowerOffProtection",
-            "cloudKey": "power_off_memory",
+            "cloudKey": "FailureProtectionSwitch",
             "valueType": 0
         },
         {
             "hyKey": "KeyMode",
-            "cloudKey": "switch_type",
+            "cloudKey": "",
             "valueType": 0
         }
     ]

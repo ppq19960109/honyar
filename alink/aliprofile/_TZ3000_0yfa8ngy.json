@@ -1,0 +1,25 @@
+{
+    "modelId": "_TZ3000_9qkwnvil",
+    "productKey": "a1KCUpY2pGD",
+    "productSecret": "CCT5kac7X5Tfx5Am",
+    "deviceSecret": "",
+    "devName": "一位轻触多控开关",
+    "deviceType": "0",
+    "attr": [
+        {
+            "hyKey": "Switch_1",
+            "cloudKey": "PowerSwitch_1",
+            "valueType": 0
+        },
+        {
+            "hyKey": "LedEnable",
+            "cloudKey": "",
+            "valueType": 0
+        },
+        {
+            "hyKey": "PowerOffProtection",
+            "cloudKey": "",
+            "valueType": 0
+        }
+    ]
+}

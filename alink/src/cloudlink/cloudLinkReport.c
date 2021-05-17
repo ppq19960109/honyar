@@ -57,16 +57,16 @@ static int cloudSingleAttrReport(HyLinkDev *hyLinkDev, CloudLinkDev *cloudLinkDe
         goto event;
     logInfo("attr report cloudKey %s", cloudLinkDev->attr[i].cloudKey);
     char *json = NULL;
-    if (strcmp(cloudLinkDev->attr[i].cloudKey, "version") == 0)
-    {
-        char value[64] = {0};
-        sprintf(value, "TY_%s", hyLinkDev->attr[hyAttr].value);
-        json = generateCloudJson(cloudLinkDev->attr[i].cloudKey, value, hyLinkDev->attr[hyAttr].valueType);
-    }
-    else
-    {
+    // if (strcmp(cloudLinkDev->attr[i].cloudKey, "version") == 0)
+    // {
+    //     char value[64] = {0};
+    //     sprintf(value, "TY_%s", hyLinkDev->attr[hyAttr].value);
+    //     json = generateCloudJson(cloudLinkDev->attr[i].cloudKey, value, hyLinkDev->attr[hyAttr].valueType);
+    // }
+    // else
+    // {
         json = generateCloudJson(cloudLinkDev->attr[i].cloudKey, hyLinkDev->attr[hyAttr].value, hyLinkDev->attr[hyAttr].valueType);
-    }
+    // }
 
     if (json != NULL)
     {

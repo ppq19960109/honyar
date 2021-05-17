@@ -25,11 +25,6 @@
             "hyKey": "PowerOffProtection",
             "cloudKey": "",
             "valueType": 0
-        },
-        {
-            "hyKey": "Switch_All",
-            "cloudKey": "SwitchAll",
-            "valueType": 0
         }
     ]
 }

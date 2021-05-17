@@ -1,0 +1,630 @@
+include /home/ppq/git/honyar/alinksdk/tools/build-rules/funcs.mk
+
+SHELL   := bash
+Q       ?= @
+VPATH   := /home/ppq/git/honyar/alinksdk/.O/src/infra /home/ppq/git/honyar/alinksdk/.O/src/dev_sign /home/ppq/git/honyar/alinksdk/.O/src/mqtt /home/ppq/git/honyar/alinksdk/.O/src/coap /home/ppq/git/honyar/alinksdk/.O/certs /home/ppq/git/honyar/alinksdk/.O/src/dynamic_register /home/ppq/git/honyar/alinksdk/.O/src/atm /home/ppq/git/honyar/alinksdk/.O/src/dev_reset /home/ppq/git/honyar/alinksdk/.O/src/ota /home/ppq/git/honyar/alinksdk/.O/src/dev_model /home/ppq/git/honyar/alinksdk/.O/src/dev_bind /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision 
+
+EXT_IFLAGS  := \
+    -Itools/build-rules/misc \
+    -Isrc \
+    -Isrc/atm \
+    -Isrc/ota \
+    -Isrc/ota/examples \
+    -Isrc/dynamic_register \
+    -Isrc/dynamic_register/examples \
+    -Isrc/shadow \
+    -Isrc/shadow/examples \
+    -Isrc/mqtt \
+    -Isrc/mqtt/impl \
+    -Isrc/mqtt/examples \
+    -Isrc/dev_sign \
+    -Isrc/dev_sign/examples \
+    -Isrc/dev_reset \
+    -Isrc/dev_reset/examples \
+    -Isrc/wifi_provision \
+    -Isrc/wifi_provision/frameworks \
+    -Isrc/wifi_provision/frameworks/utils \
+    -Isrc/wifi_provision/frameworks/ieee80211 \
+    -Isrc/wifi_provision/frameworks/aplist \
+    -Isrc/wifi_provision/ht40 \
+    -Isrc/wifi_provision/dev_ap \
+    -Isrc/wifi_provision/phone_ap \
+    -Isrc/wifi_provision/zero_config \
+    -Isrc/wifi_provision/p2p \
+    -Isrc/wifi_provision/mcast_smartconfig \
+    -Isrc/wifi_provision/smartconfig \
+    -Isrc/wifi_provision/connectivity \
+    -Isrc/http2 \
+    -Isrc/http2/examples \
+    -Isrc/http \
+    -Isrc/http/examples \
+    -Isrc/infra \
+    -Isrc/coap \
+    -Isrc/coap/client \
+    -Isrc/coap/server \
+    -Isrc/coap/CoAPPacket \
+    -Isrc/coap/examples \
+    -Isrc/dev_model \
+    -Isrc/dev_model/client \
+    -Isrc/dev_model/alcs \
+    -Isrc/dev_model/server \
+    -Isrc/dev_model/examples \
+    -Isrc/dev_model/deprecated \
+    -Isrc/dev_bind \
+
+IFLAGS  := \
+    -Isrc/infra \
+    -Isrc/dev_sign \
+    -Isrc/dev_sign/examples \
+    -Isrc/mqtt \
+    -Isrc/mqtt/impl \
+    -Isrc/mqtt/examples \
+    -Isrc/coap \
+    -Isrc/coap/client \
+    -Isrc/coap/server \
+    -Isrc/coap/CoAPPacket \
+    -Isrc/coap/examples \
+    -Icerts \
+    -Isrc/dynamic_register \
+    -Isrc/dynamic_register/examples \
+    -Isrc/atm \
+    -Isrc/dev_reset \
+    -Isrc/dev_reset/examples \
+    -Isrc/ota \
+    -Isrc/ota/examples \
+    -Isrc/dev_model \
+    -Isrc/dev_model/client \
+    -Isrc/dev_model/alcs \
+    -Isrc/dev_model/server \
+    -Isrc/dev_model/examples \
+    -Isrc/dev_model/deprecated \
+    -Isrc/dev_bind \
+    -Isrc/wifi_provision \
+    -Isrc/wifi_provision/frameworks \
+    -Isrc/wifi_provision/frameworks/utils \
+    -Isrc/wifi_provision/frameworks/ieee80211 \
+    -Isrc/wifi_provision/frameworks/aplist \
+    -Isrc/wifi_provision/ht40 \
+    -Isrc/wifi_provision/dev_ap \
+    -Isrc/wifi_provision/phone_ap \
+    -Isrc/wifi_provision/zero_config \
+    -Isrc/wifi_provision/p2p \
+    -Isrc/wifi_provision/mcast_smartconfig \
+    -Isrc/wifi_provision/smartconfig \
+    -Isrc/wifi_provision/connectivity \
+    -Iwrappers \
+    -Iwrappers/atm \
+    -Iwrappers/atm/at_tcp \
+    -Iwrappers/atm/at_mqtt \
+    -Iwrappers/tls \
+    -Iwrappers/os \
+    -Iwrappers/os/windows \
+    -Iwrappers/os/macos \
+    -Iwrappers/os/ubuntu \
+    -Iwrappers/os/nucleus \
+    -Iwrappers/os/nos \
+    -Iwrappers/os/arm \
+    -Iwrappers/os/freertos \
+    -Iexternal_libs/mbedtls \
+    -Iexternal_libs/mbedtls/library \
+    -Iexternal_libs/mbedtls/include \
+    -Iexternal_libs/mbedtls/include/mbedtls \
+
+CFLAGS  := \
+     \
+    -DATM_ENABLED \
+    -DAWSS_DISABLE_ENROLLEE \
+    -DAWSS_DISABLE_REGISTRAR \
+    -DAWSS_FRAMEWORKS \
+    -DAWSS_SUPPORT_APLIST \
+    -DAWSS_SUPPORT_SMARTCONFIG \
+    -DAWSS_SUPPORT_SMARTCONFIG_MCAST \
+    -DAWSS_SUPPORT_SMARTCONFIG_WPS \
+    -DCOAP_PACKET \
+    -DCOAP_SERVER \
+    -DDEVICE_MODEL_ENABLED \
+    -DDEVICE_MODEL_GATEWAY \
+    -DDEVICE_MODEL_MULTI_THREAD \
+    -DDEV_BIND_ENABLED \
+    -DDEV_RESET \
+    -DDEV_SIGN \
+    -DDM_MESSAGE_CACHE_DISABLED \
+    -DDYNAMIC_REGISTER \
+    -DFORCE_SSL_VERIFY \
+    -DHAL_KV \
+    -DHTTP_DYNAMIC_REGISTER \
+    -DINFRA_AES \
+    -DINFRA_CJSON \
+    -DINFRA_COMPAT \
+    -DINFRA_HTTPC \
+    -DINFRA_JSON_PARSER \
+    -DINFRA_LIST \
+    -DINFRA_LOG \
+    -DINFRA_LOG_ALL_MUTED \
+    -DINFRA_LOG_MUTE_CRT \
+    -DINFRA_LOG_MUTE_DBG \
+    -DINFRA_LOG_MUTE_ERR \
+    -DINFRA_LOG_MUTE_FLW \
+    -DINFRA_LOG_MUTE_INF \
+    -DINFRA_LOG_MUTE_WRN \
+    -DINFRA_MD5 \
+    -DINFRA_NET \
+    -DINFRA_REPORT \
+    -DINFRA_SHA1 \
+    -DINFRA_SHA256 \
+    -DINFRA_STRING \
+    -DINFRA_TIMER \
+    -DLOG_REPORT_TO_CLOUD \
+    -DMQTT_AUTO_SUBSCRIBE \
+    -DMQTT_COMM_ENABLED \
+    -DMQTT_DEFAULT_IMPL \
+    -DMQTT_DIRECT \
+    -DOTA_ENABLED \
+    -DPLATFORM_HAS_DYNMEM \
+    -DPLATFORM_HAS_MBEDTLS \
+    -DPLATFORM_HAS_OS \
+    -DPLATFORM_HAS_STDINT \
+    -DSUPPORT_TLS \
+    -DWIFI_PROVISION_ENABLED \
+    -D_PLATFORM_IS_LINUX_ \
+    -Iwrappers \
+    -Wall \
+    -w \
+
+STAMP_LCOV  := /home/ppq/git/honyar/alinksdk/.O/.coverage.done
+
+.PHONY: all
+all: /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a  /home/ppq/git/honyar/alinksdk/.O/usr/bin/dev-sign-example /home/ppq/git/honyar/alinksdk/.O/usr/bin/mqtt-example-at /home/ppq/git/honyar/alinksdk/.O/usr/bin/dynreg-example /home/ppq/git/honyar/alinksdk/.O/usr/bin/dev-reset-example /home/ppq/git/honyar/alinksdk/.O/usr/bin/ota-example-mqtt /home/ppq/git/honyar/alinksdk/.O/usr/bin/linkkit-example-solo /home/ppq/git/honyar/alinksdk/.O/usr/bin/linkkit-example-gateway 
+	$(Q)cp -rf /iot_import.h /iot_export.h /imports /exports  /home/ppq/git/honyar/alinksdk/.O/usr/include 2>/dev/null || true
+	@rm -f *.gcda *.gcno $$(find /home/ppq/git/honyar/alinksdk/tools/build-rules -name "*.o")
+
+	@if [ "$(WITH_LCOV)" = "1" ]; then \
+	    mkdir -p $$(dirname $(STAMP_LCOV)); \
+	    touch $(STAMP_LCOV); \
+	else \
+	    rm -f $(STAMP_LCOV); \
+	fi
+
+ifneq (,$(findstring gcc,$(CC)))
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_timer.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_preauth.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_json_parser.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_net.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_defs.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_sha1.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_aes.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_log.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_report.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_string.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_prt_nwk_payload.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_mem_stats.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_compat.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_md5.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_sha256.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_cjson.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_httpc.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_sign/dev_sign_mqtt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/mqtt_api.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/iotx_mqtt_client.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTConnectClient.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTDeserializePublish.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTPacket.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTSerializePublish.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTSubscribeClient.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTUnsubscribeClient.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPDeserialize_common.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPMessage_common.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPSerialize_common.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPExport.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPMessage.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPNetwork.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPObserve.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPPlatform.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPResource.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPServer.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/certs/root_ca.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dynamic_register/dynreg.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/atm/at_api.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_reset/dev_reset.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/ota/iotx_ota.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_coap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_fetch.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_lib.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_mqtt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_api.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_cota.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_fota.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_ipc.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_log_report.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_manager.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_message.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_message_cache.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_msg_process.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_opt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_ota.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_shadow.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_tsl_alink.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_utils.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/impl_linkkit.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm_coap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm_mqtt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/server/dm_server_adapter.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/server/dm_server.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/client/dm_client_adapter.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/client/dm_client.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_gateway.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_ntp.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_solo.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_coap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_mqtt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_msg.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_token.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_utils.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/mcast_smartconfig/mcast_smartconfig.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/smartconfig/awss_smartconfig.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/p2p/awss_wps.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss_discover.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss_main.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/connect_ap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/zconfig_protocol.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/zconfig_vendor_common.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/aplist/awss_aplist.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/ieee80211/zconfig_ieee80211.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/awss_crypt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/awss_event.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/os_misc.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/passwd.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/zconfig_utils.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/connectivity/wifi_coap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/connectivity/wifi_mqtt.d
+endif
+
+/home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a: \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_timer.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_preauth.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_json_parser.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_net.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_defs.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_sha1.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_aes.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_log.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_report.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_string.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_prt_nwk_payload.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_mem_stats.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_compat.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_md5.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_sha256.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_cjson.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/infra/infra_httpc.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_sign/dev_sign_mqtt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/mqtt_api.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/iotx_mqtt_client.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTConnectClient.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTDeserializePublish.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTPacket.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTSerializePublish.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTSubscribeClient.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/mqtt/impl/MQTTUnsubscribeClient.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPDeserialize_common.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPMessage_common.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/CoAPPacket/CoAPSerialize_common.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPExport.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPMessage.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPNetwork.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPObserve.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPPlatform.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPResource.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/coap/server/CoAPServer.o \
+    /home/ppq/git/honyar/alinksdk/.O/certs/root_ca.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dynamic_register/dynreg.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/atm/at_api.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_reset/dev_reset.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/ota/iotx_ota.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_coap.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_fetch.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_lib.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/ota/ota_mqtt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_api.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_cota.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_fota.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_ipc.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_log_report.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_manager.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_message.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_message_cache.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_msg_process.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_opt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_ota.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_shadow.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_tsl_alink.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/dm_utils.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/impl_linkkit.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm_coap.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/iotx_cm_mqtt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/server/dm_server_adapter.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/server/dm_server.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/client/dm_client_adapter.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/client/dm_client.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_gateway.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_ntp.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_model/deprecated/impl_solo.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_coap.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_mqtt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_msg.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_token.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/dev_bind/bind_utils.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/mcast_smartconfig/mcast_smartconfig.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/smartconfig/awss_smartconfig.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/p2p/awss_wps.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss_discover.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/awss_main.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/connect_ap.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/zconfig_protocol.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/zconfig_vendor_common.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/aplist/awss_aplist.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/ieee80211/zconfig_ieee80211.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/awss_crypt.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/awss_event.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/os_misc.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/passwd.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/frameworks/utils/zconfig_utils.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/connectivity/wifi_coap.o \
+    /home/ppq/git/honyar/alinksdk/.O/src/wifi_provision/connectivity/wifi_mqtt.o \
+
+	$(Q)mkdir -p $$(dirname $@)
+	$(Q)$(call Brief_Log,"AR",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-ar -rcs $@ $^ 2>/dev/null
+
+%.o:
+	$(Q)$(call Brief_Log,"CC",$$(basename $@),"...")
+	$(Q)mkdir -p $$(dirname $@)
+	$(Q)S=$$(echo $@|sed 's,/home/ppq/git/honyar/alinksdk/.O,/home/ppq/git/honyar/alinksdk,1'); \
+    if echo $${S//.o/.c} | grep -q 'mbedtls\|HAL_\|nghttp2'; then \
+        arm-rockchip-linux-gnueabihf-gcc -c \
+            -o $@ \
+            $(filter-out -ansi,$(CFLAGS)) \
+            $(IFLAGS) \
+            $${S//.o/.c}; \
+    else \
+        arm-rockchip-linux-gnueabihf-gcc -c \
+            -o $@ \
+            $(CFLAGS) \
+            $(IFLAGS) \
+            $${S//.o/.c}; \
+    fi
+
+ifneq (,$(findstring gcc,$(CC)))
+%.d:
+	@\
+( \
+	D=$$(dirname $@|sed 's,/home/ppq/git/honyar/alinksdk/.O,/home/ppq/git/honyar/alinksdk,1'); \
+	F=$$(basename $@); \
+	F=$${F/.d/.c}; \
+	mkdir -p $$(dirname $@); \
+	arm-rockchip-linux-gnueabihf-gcc -MM -I$(CURDIR) \
+	    $(IFLAGS) \
+	    $(filter-out -ansi,$(CFLAGS)) \
+	$${D}/$${F} > $@.$$$$; \
+	sed -i 's!$(shell basename $*)\.o[ :]!$*.o:!1' $@.$$$$; \
+	mv $@.$$$$ $@; \
+)
+endif
+
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_AWSS_linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_FS_Linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_KV_linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_OS_linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_TCP_linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_UDP_linux.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/tls/HAL_DTLS_mbedtls.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/wrappers/tls/HAL_TLS_mbedtls.d
+
+/home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a: \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_AWSS_linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_FS_Linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_KV_linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_OS_linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_TCP_linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/os/arm/HAL_UDP_linux.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/tls/HAL_DTLS_mbedtls.o \
+    /home/ppq/git/honyar/alinksdk/.O/wrappers/tls/HAL_TLS_mbedtls.o \
+
+	$(Q)mkdir -p $$(dirname $@)
+	$(Q)$(call Brief_Log,"AR",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-ar -rcs $@ $^ 2>/dev/null
+
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/platform.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ctr_drbg.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pk_wrap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/entropy.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/error.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pk.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/sha1.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/oid.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pem.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/entropy_poll.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/cipher.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/rsa.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/md_wrap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/sha256.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_cli.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/timing.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/asn1parse.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_tls.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/x509.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/x509_crt.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/debug.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/md.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/base64.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/net_sockets.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/aes.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/cipher_wrap.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/bignum.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pkparse.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_ciphersuites.d
+sinclude /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_cookie.d
+
+/home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a: \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/platform.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ctr_drbg.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pk_wrap.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/entropy.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/error.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pk.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/sha1.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/oid.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pem.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/entropy_poll.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/cipher.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/rsa.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/md_wrap.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/sha256.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_cli.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/timing.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/asn1parse.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_tls.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/x509.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/x509_crt.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/debug.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/md.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/base64.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/net_sockets.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/aes.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/cipher_wrap.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/bignum.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/pkparse.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_ciphersuites.o \
+    /home/ppq/git/honyar/alinksdk/.O/external_libs/mbedtls/library/ssl_cookie.o \
+
+	$(Q)mkdir -p $$(dirname $@)
+	$(Q)$(call Brief_Log,"AR",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-ar -rcs $@ $^ 2>/dev/null
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/dev-sign-example: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/dev_sign/examples/dev_sign_example.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/mqtt-example-at: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/mqtt/examples/mqtt_example_at.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/dynreg-example: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/dynamic_register/examples/dynreg_example.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/dev-reset-example: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/dev_reset/examples/dev_reset_example.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/ota-example-mqtt: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/ota/examples/ota_example_mqtt.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/linkkit-example-solo: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/dev_model/examples/linkkit_example_solo.c \
+    /home/ppq/git/honyar/alinksdk/src/dev_model/examples/cJSON.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
+/home/ppq/git/honyar/alinksdk/.O/usr/bin/linkkit-example-gateway: \
+     \
+    /home/ppq/git/honyar/alinksdk/src/dev_model/examples/linkkit_example_gateway.c \
+    /home/ppq/git/honyar/alinksdk/src/dev_model/examples/cJSON.c \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_sdk.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_hal.a \
+    /home/ppq/git/honyar/alinksdk/.O/usr/lib/libiot_tls.a \
+
+	$(Q)$(call Brief_Log,"LD",$$(basename $@),"...")
+	$(Q)arm-rockchip-linux-gnueabihf-gcc \
+        -o $@ \
+        $(IFLAGS) \
+        $(filter-out -Wdeclaration-after-statement -ansi,$(CFLAGS)) \
+        $(filter-out %.a,$^) \
+         \
+        -L/home/ppq/git/honyar/alinksdk/.O/usr/lib \
+        -ldl -lm -lpthread -lrt -liot_sdk -liot_hal -liot_tls -L/home/ppq/git/honyar/alinksdk/.O/usr/lib -ldl -lm -lpthread -lrt 
+
