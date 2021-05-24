@@ -40,7 +40,10 @@ CFLAGS += -I$(HYTOOL_PATH)/include/tcp
 CFLAGS += -I$(HYTOOL_PATH)/include/timer
 CFLAGS += -I$(HYTOOL_PATH)/include/signal
 CFLAGS += -I$(TUYA_PATH)/include
-CFLAGS += -Wall
+CFLAGS += -Wall 
+ifdef DEBUG
+CFLAGS += -g -lmcheck -DDEBUG
+endif
 
 LDFLAGS += -L$(HYTOOL_PATH)/lib
 LDFLAGS += -L$(TUYA_PATH)/lib
@@ -68,7 +71,9 @@ all: $(TARGET)
 
 $(TARGET) : $(OBJ)
 	$(CC) $^  $(CFLAGS) $(LDFLAGS) $(LIBS) -o $@
+ifndef DEBUG
 	$(STRIP) $@
+endif
 clean :
 	$(RM) $(TARGET)
 	$(RM) $(OBJ)

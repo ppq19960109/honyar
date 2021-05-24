@@ -162,7 +162,7 @@ int tyZigbeeInit(void)
 #endif
         .ver = "1.0.0",
         .uz_cfg = "devices.json",
-        .log_level = TY_LOG_WARN};
+        .log_level = TY_LOG_NOTICE};
 
     ty_gw_infra_cbs_s gw_infra_cbs = {
         .get_uuid_authkey_cb = _iot_get_uuid_authkey_cb,

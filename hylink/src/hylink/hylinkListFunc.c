@@ -87,6 +87,7 @@ void hylinkListEmpty(void)
 
     kh_foreach_value(hyMap, ptr, LISTEMPTY);
     kh_clear(hyLink, hyMap);
+    hylinkListDestroy();
 }
 
 void *hylinkListGet(const char *key)

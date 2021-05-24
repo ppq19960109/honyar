@@ -41,8 +41,11 @@ CFLAGS += -I$(HYTOOL_PATH)/include/klib
 CFLAGS += -I$(HYTOOL_PATH)/include/tcp
 CFLAGS += -I$(HYTOOL_PATH)/include/timer
 CFLAGS += -I$(HYTOOL_PATH)/include/signal
-CFLAGS += -Wall
 CFLAGS += -I$(HYTOOLSDK_PATH)/include
+CFLAGS += -Wall
+ifdef DEBUG
+CFLAGS += -g -lmcheck -DDEBUG
+endif
 
 LDFLAGS += -L$(HYTOOL_PATH)/lib
 LDFLAGS += -L$(TOPDIR)

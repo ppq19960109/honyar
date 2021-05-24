@@ -104,6 +104,7 @@ void zigbeeListEmpty(void)
 
     kh_foreach_value(zigbeeMap, ptr, LISTEMPTY);
     kh_clear(zigbee, zigbeeMap);
+    zigbeeListDestroy();
 }
 
 void *zigbeeListGet(const char *key)

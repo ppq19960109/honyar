@@ -186,6 +186,7 @@ int hylinkRecvJson(char *data)
                 }
             }
             hylinkSendFunc(&hylinkSend);
+            free(hylinkSendData);
         }
         break;
         case LOCAL_SCENE:

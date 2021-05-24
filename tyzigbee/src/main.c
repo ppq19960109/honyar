@@ -12,6 +12,9 @@
 #include "heartbeat.h"
 
 #include "hytool.h"
+#ifdef DEBUG
+#include <mcheck.h>
+#endif // DEBUG
 
 static int zigbee_init_flag = 0;
 int hylink_connect(void)
@@ -32,11 +35,20 @@ static int mainClose(void)
     zigbeeClose();
     hylinkClose();
     cpythonDestroy();
+#ifdef DEBUG
+    muntrace();
+    unsetenv("MALLOC_TRACE");
+#endif // DEBUG
     return 0;
 }
 
 int main()
 {
+#ifdef DEBUG
+    logInfo("tuyazigbee debug app main start");
+    setenv("MALLOC_TRACE", "./memleak.log", 1);
+    mtrace();
+#endif // DEBUG
     cpythonInit();
     // return pythonTest();
     registerSystemCb(heartbeat, SYSTEM_HEARTBEAT);

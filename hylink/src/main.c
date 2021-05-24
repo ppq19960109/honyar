@@ -15,7 +15,9 @@
 #else
 #include "u86_driver.h"
 #endif // !ARCH
-
+#ifdef DEBUG
+#include <mcheck.h>
+#endif // DEBUG
 int mainClose(void)
 {
     hytoolClose();
@@ -24,11 +26,20 @@ int mainClose(void)
 #ifndef ARCH
     rkDriverClose();
 #endif // !ARCH
+#ifdef DEBUG
+    muntrace();
+    unsetenv("MALLOC_TRACE");
+#endif // DEBUG
     return 0;
 }
 
 int main()
 {
+#ifdef DEBUG
+    logInfo("tuyazigbee debug app main start");
+    setenv("MALLOC_TRACE", "./memleak.log", 1);
+    mtrace();
+#endif // DEBUG
 #ifndef ARCH
     rkDriverOpen();
 #else
