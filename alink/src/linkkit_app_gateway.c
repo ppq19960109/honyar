@@ -15,7 +15,9 @@
 #if defined(OTA_ENABLED) && defined(BUILD_AOS)
 #include "ota_service.h"
 #endif
-
+#ifdef DEBUG
+#include <mcheck.h>
+#endif // DEBUG
 // char g_product_key[IOTX_PRODUCT_KEY_LEN + 1] = "";
 // char g_product_secret[IOTX_PRODUCT_SECRET_LEN + 1] = "";
 // char g_device_name[IOTX_DEVICE_NAME_LEN + 1] = "";
@@ -216,6 +218,10 @@ int main_close(void)
     IOT_SetLogLevel(IOT_LOG_NONE);
     //-----------------------------------------------
     HAL_MutexDestroy(user_example_ctx->mutex);
+#ifdef DEBUG
+    muntrace();
+    unsetenv("MALLOC_TRACE");
+#endif // DEBUG
     return 0;
 }
 
@@ -404,6 +410,11 @@ void main_init(void)
 static int max_running_seconds = 0;
 int main(int argc, char **argv)
 {
+#ifdef DEBUG
+    logInfo("debug app main start");
+    setenv("MALLOC_TRACE", "./memleak.log", 1);
+    mtrace();
+#endif // DEBUG
     int res = 0;
     uint64_t time_prev_sec = 0, time_now_sec = 0, time_begin_sec = 0;
     user_example_ctx_t *user_example_ctx = user_example_get_ctx();

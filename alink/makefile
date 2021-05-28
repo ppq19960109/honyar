@@ -22,6 +22,9 @@ CFLAGS += -I$(HYTOOL_PATH)/include/klib
 CFLAGS += -I$(HYLINK_PATH)/include
 CFLAGS += -I$(ALI_PATH)/include
 CFLAGS += -Wall
+ifdef DEBUG
+CFLAGS += -g -lmcheck -DDEBUG
+endif
 
 LDFLAGS += -L$(HYTOOL_PATH)/lib
 LDFLAGS += -L$(HYLINK_PATH)/lib

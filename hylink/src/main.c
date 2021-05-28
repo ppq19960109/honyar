@@ -36,7 +36,7 @@ int mainClose(void)
 int main()
 {
 #ifdef DEBUG
-    logInfo("tuyazigbee debug app main start");
+    logInfo("debug app main start");
     setenv("MALLOC_TRACE", "./memleak.log", 1);
     mtrace();
 #endif // DEBUG

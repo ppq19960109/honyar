@@ -35,7 +35,9 @@ CFLAGS += -I$(BASE64_PATH)
 CFLAGS += -I$(SIGNAL_PATH)
 CFLAGS += -I$(TIMER_PATH)
 CFLAGS += -Wall
-
+ifdef DEBUG
+CFLAGS += -g -DDEBUG
+endif
 LDFLAGS += -L$(TOPDIR)
 
 

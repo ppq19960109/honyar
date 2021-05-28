@@ -276,6 +276,7 @@ void hylinkListEmpty(void)
 
     kh_foreach_value(hyMap, dev, LISTEMPTY);
     kh_clear(hyLink, hyMap);
+    hylinkListDestroy();
 }
 
 HyLinkDev *hylinkListGetById(const char *id)

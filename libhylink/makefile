@@ -37,7 +37,9 @@ CFLAGS += -I$(HYTOOL_PATH)/include/tcp
 CFLAGS += -I$(HYTOOL_PATH)/include/timer
 CFLAGS += -I$(HYTOOL_PATH)/include/signal
 CFLAGS += -Wall
-
+ifdef DEBUG
+CFLAGS += -g -DDEBUG
+endif
 LDFLAGS += -L$(TOPDIR)
 
 

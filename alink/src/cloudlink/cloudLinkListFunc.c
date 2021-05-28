@@ -265,6 +265,7 @@ void cloudLinkListEmpty(void)
 
     kh_foreach_value(cloudMap, dev, LISTEMPTY);
     kh_clear(cloudLink, cloudMap);
+    cloudLinkListDestroy();
 }
 
 CloudLinkDev *cloudLinkListGetById(const char *id)

@@ -116,7 +116,7 @@ void cloudLinkClose(void)
     databaseClose();
 
     cloudLinkListEmpty();
-    cloudLinkListDestroy();
+
     pthread_mutex_destroy(&cloudLink_mutex);
 }
 
