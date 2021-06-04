@@ -16,7 +16,6 @@
 #include <linux/ethtool.h>
 
 #include <arpa/inet.h>
-#include "cJSON.h"
 
 const char *getNetworkIp(const char *eth_inf, char *ip, unsigned char len)
 {

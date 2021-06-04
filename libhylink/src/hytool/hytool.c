@@ -32,8 +32,9 @@ static void timerThreadHandler(union sigval v)
 }
 static int led_timer_open(void)
 {
-    if (led_timer_id != NULL)
+    if (led_timer_id == NULL)
     {
+        printf("timer id is NULL....................\n");
         return -1;
     }
     led_timer_id = POSIXTimerCreate(LED_TIMEER_INDEX, timerThreadHandler);
